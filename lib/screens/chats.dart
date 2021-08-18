@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:brokerly/services/deep_links.dart';
 import 'package:brokerly/widgets/action_button.dart';
 import 'package:brokerly/widgets/bot_tile.dart';
 import 'package:brokerly/widgets/expandable_fab.dart';
@@ -30,7 +33,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   FocusNode focusNode = FocusNode();
   QRViewController controller;
 
-  void addBot(BuildContext context, String botLink) {
+  void addBot(BuildContext context, String botLinkBase64) {
+    String botDeepLink = base64.decode(botLinkBase64).toString();
+    String botLink = extractBotLink(Uri.parse(botDeepLink));
     addBotFromUrl(context, botLink, widget.client);
     closeNewBotInput();
   }
