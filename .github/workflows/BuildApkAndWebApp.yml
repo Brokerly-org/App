@@ -1,0 +1,32 @@
+# This is a basic workflow to help you get started with Actions
+
+name: FlutterBuild
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Flutter action
+        uses: subosito/flutter-action@v1.5.3
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - run: flutter build web --release
+      
+      - name: Upload apk build
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk-build
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      
+      - name: Upload web app to release
+        uses: actions/upload-artifact@v2
+        with:
+          name: webapp-build
+          path: build/web
