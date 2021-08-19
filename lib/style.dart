@@ -18,3 +18,6 @@ MaterialColor primery = MaterialColor(0xFF4D4D4D, color);
 Color backgroundColor = Color.fromRGBO(30, 30, 30, 1);
 Color textColor = Color.fromRGBO(253, 253, 253, 1);
 Color buttonColor = Color.fromRGBO(52, 120, 219, 1);
+
+Color onlineColor = Color.fromRGBO(36, 193, 33, 1);
+Color offlineColor = Color.fromRGBO(223, 204, 204, 1);

@@ -61,10 +61,12 @@ class Client {
             if (serverMessages == null) {serverMessages = []},
             serverMessages.forEach((botMessages) {
               var messages = botMessages["messages"];
-              Bot bot = botsProvider.bots[botMessages["botname"]];
+              Bot bot = botsProvider.bots[botMessages["chat"]];
               messages.forEach((messageData) {
-                Message message = Message(
-                    messageData, "bot", DateTime.fromMillisecondsSinceEpoch(0));
+                messageData["created_at"] =
+                    (messageData["created_at"] * 1000.0).round();
+                print(messageData);
+                Message message = Message.fromDict(messageData);
                 botsProvider.addMessagesToBot(bot.botname, [message]);
               });
             })
@@ -103,8 +105,12 @@ class Client {
     }
 
     var response = await http.get(uri);
-    Map<String, dynamic> statusUpdate = json.decode(response.body);
-    statusUpdate.forEach((botname, value) {
+    print(response.body);
+    List<dynamic> statusUpdate = json.decode(response.body);
+    print(statusUpdate);
+    statusUpdate.forEach((botStatus) {
+      String botname = botStatus["botname"];
+      double value = botStatus["last_online"];
       double lastOnline = value * 1.0;
       botsProvider.updateBotLastOnline(botname, lastOnline.round());
     });

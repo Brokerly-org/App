@@ -1,3 +1,4 @@
+import 'package:brokerly/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -64,7 +65,8 @@ class ChatScreen extends StatelessWidget {
     }
     bot.readMessages();
     return Scaffold(
-      appBar: AppBar(title: Text(bot.title), actions: [chatActions(bot)]),
+      appBar:
+          AppBar(title: Text(bot.title), actions: [chatActions(context, bot)]),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,11 +106,13 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
-  PopupMenuButton<String> chatActions(Bot bot) {
+  PopupMenuButton<String> chatActions(BuildContext context, Bot bot) {
     return PopupMenuButton(
       onSelected: (String selected) {
         if (selected == "share") {
           Share.share(bot.shareLink());
+        } else {
+          showMessage(context, "<$selected> Not support yet.");
         }
       },
       itemBuilder: (BuildContext context) {

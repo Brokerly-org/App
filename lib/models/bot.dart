@@ -14,6 +14,10 @@ class Bot {
 
   Bot(this.botname, this.title, this.description, this.server);
 
+  Duration get durationFromLastOnline {
+    return DateTime.now().difference(this.lastOnline);
+  }
+
   String shareLink() {
     return "https://brokerly.tk/bot/${server.urlSchema == 'https' ? 'secure' : 'notsecure'}/${this.botname}?url=${this.server.url}";
   }

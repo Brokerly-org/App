@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'const.dart';
 import 'models/bot.dart';
 import 'models/server.dart';
 import 'providers/bots_provider.dart';
@@ -10,7 +11,7 @@ import 'services/client.dart';
 void showMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message, style: TextStyle(fontSize: 18)),
-      duration: Duration(seconds: 2)));
+      duration: Duration(milliseconds: 1400)));
 }
 
 void showError(BuildContext context, String message) {
@@ -69,4 +70,8 @@ void addBotFromUrl(BuildContext context, String url, Client client) async {
   }
   Cache.saveBot(newBot);
   botsProvider.addBot(newBot);
+}
+
+bool isDesktop(BuildContext context) {
+  return MediaQuery.of(context).size.width > kDesktopMinSize;
 }

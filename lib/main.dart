@@ -2,9 +2,10 @@ import 'package:brokerly/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'app_loader.dart';
-import 'providers/bots_provider.dart';
 import 'style.dart';
+import 'app_loader.dart';
+import 'screens/chat.dart';
+import 'providers/bots_provider.dart';
 
 void main() {
   runApp(MultiProvider(

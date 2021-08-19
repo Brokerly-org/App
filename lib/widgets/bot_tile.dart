@@ -1,6 +1,9 @@
+import 'package:brokerly/const.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../utils.dart';
+import '../style.dart';
 import '../models/bot.dart';
 import '../providers/bots_provider.dart';
 import '../services/client.dart';
@@ -21,7 +24,7 @@ class BotTile extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () {
-          if (MediaQuery.of(context).size.width < 600) {
+          if (!isDesktop(context)) {
             Navigator.pushNamed(context, '/chat',
                 arguments: ChatScreenArguments(bot.botname, client));
           } else {
@@ -31,32 +34,38 @@ class BotTile extends StatelessWidget {
         tileColor: Theme.of(context).primaryColor,
         title: Text(bot.title),
         subtitle: Text(bot.description),
-        leading: DateTime.now().difference(bot.lastOnline).inMinutes < 1
-            ? Container(
-                width: 6.5,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(36, 193, 33, 1),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              )
-            : null,
-        trailing: bot.unreadMessages > 0
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Container(
-                  height: 22,
-                  width: 10.0 + bot.unreadMessages.toString().length * 12.0,
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).buttonColor,
-                  ),
-                  child: Text(bot.unreadMessages.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 15)),
-                ),
-              )
-            : null,
+        leading: onlineIndicator(),
+        trailing:
+            bot.unreadMessages > 0 ? unreadMessagesCounter(context) : null,
+      ),
+    );
+  }
+
+  ClipRRect unreadMessagesCounter(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        height: 22,
+        width: 10.0 + bot.unreadMessages.toString().length * 12.0,
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(4.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).buttonColor,
+        ),
+        child: Text(bot.unreadMessages.toString(),
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 15)),
+      ),
+    );
+  }
+
+  Container onlineIndicator() {
+    return Container(
+      width: 6.5,
+      decoration: BoxDecoration(
+        color: bot.durationFromLastOnline < kMaxDurationFromLastOnline
+            ? onlineColor
+            : offlineColor,
+        borderRadius: BorderRadius.circular(25),
       ),
     );
   }
