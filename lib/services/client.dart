@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:brokerly/providers/bots_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -11,7 +14,7 @@ import '../models/server.dart';
 import '../models/bot.dart';
 
 class Client {
-  void pushMessageToBot(Bot bot, String message) async {
+  Future<void> pushMessageToBot(Bot bot, String message) async {
     Server server = bot.server;
 
     Map<String, String> params = {
@@ -54,18 +57,29 @@ class Client {
     return messageList;
   }
 
+  void playRecvSound() async {
+    // TODO load data once and forever for that widget
+    AudioPlayer audioPlayer = AudioPlayer();
+    final ByteData data = await rootBundle.load('assets/received.wav');
+    final Uint8List dataBytes = data.buffer.asUint8List();
+    int result = await audioPlayer.playBytes(dataBytes);
+    print('sendMessageSound result is $result');
+  }
+
   void pullMessagesFromServers(BuildContext context) {
     BotsProvider botsProvider = context.read<BotsProvider>();
     botsProvider.servers.values.forEach((server) {
+      bool playedSound = false;
       this._pullFromServer(server).then((serverMessages) => {
             if (serverMessages == null) {serverMessages = []},
+            if (serverMessages.isNotEmpty && !playedSound)
+              {playRecvSound(), playedSound = true},
             serverMessages.forEach((botMessages) {
               var messages = botMessages["messages"];
               Bot bot = botsProvider.bots[botMessages["chat"]];
               messages.forEach((messageData) {
                 messageData["created_at"] =
                     (messageData["created_at"] * 1000.0).round();
-                print(messageData);
                 Message message = Message.fromDict(messageData);
                 botsProvider.addMessagesToBot(bot.botname, [message]);
               });
@@ -105,9 +119,7 @@ class Client {
     }
 
     var response = await http.get(uri);
-    print(response.body);
     List<dynamic> statusUpdate = json.decode(response.body);
-    print(statusUpdate);
     statusUpdate.forEach((botStatus) {
       String botname = botStatus["botname"];
       double value = botStatus["last_online"];

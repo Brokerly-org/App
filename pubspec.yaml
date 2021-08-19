@@ -20,6 +20,7 @@ dependencies:
   qr_code_scanner: ^0.5.2
   emoji_picker: ^0.1.0
   cupertino_icons: ^1.0.2
+  audioplayers: ^0.19.1
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +30,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/home_illustrate.svg
+    - assets/received.wav
+    - assets/sent.wav
 
   # fonts:
   #   - family: Schyler

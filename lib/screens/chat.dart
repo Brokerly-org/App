@@ -1,8 +1,12 @@
-import 'package:brokerly/utils.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:audioplayers/audioplayers.dart';
 
+import '../utils.dart';
 import '../widgets/explain_new_bot_illustration.dart';
 import '../widgets/message_bar.dart';
 import '../widgets/message_bobble.dart';
@@ -33,12 +37,21 @@ class ChatScreen extends StatelessWidget {
         duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
+  void playSendSound() async {
+    // TODO load data once and forever for that widget
+    AudioPlayer audioPlayer = AudioPlayer();
+    final ByteData data = await rootBundle.load('assets/sent.wav');
+    final Uint8List dataBytes = data.buffer.asUint8List();
+    int result = await audioPlayer.playBytes(dataBytes);
+    print('sendMessageSound result is $result');
+  }
+
   void sendMessage(
       BuildContext context, String message, Client client, Bot bot) async {
     if (message.isEmpty || message == null) {
       return;
     }
-    client.pushMessageToBot(bot, message);
+    client.pushMessageToBot(bot, message).then((value) => playSendSound());
     Message newMessage = Message(message, "user", DateTime.now());
     context.read<BotsProvider>().addMessagesToBot(bot.botname, [newMessage]);
   }

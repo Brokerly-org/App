@@ -31,6 +31,9 @@ class BotsProvider extends ChangeNotifier {
   }
 
   void readBotMessages(String botname) {
+    if (this.bots[botname].unreadMessages == 0) {
+      return;
+    }
     this.bots[botname].readMessages();
     notifyListeners();
   }
