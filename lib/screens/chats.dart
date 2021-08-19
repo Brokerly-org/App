@@ -1,20 +1,21 @@
 import 'dart:convert';
 
-import 'package:brokerly/services/deep_links.dart';
-import 'package:brokerly/widgets/action_button.dart';
-import 'package:brokerly/widgets/bot_tile.dart';
-import 'package:brokerly/widgets/expandable_fab.dart';
-import 'package:brokerly/widgets/explain_new_bot_illustration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import '../utils.dart';
-import '../widgets/new_bot_input.dart';
-import '../providers/bots_provider.dart';
-import '../services/client.dart';
-import '../models/bot.dart';
 import '../const.dart';
+import '../providers/bots_provider.dart';
+import '../services/deep_links.dart';
+import '../services/client.dart';
+import '../utils.dart';
+import '../models/bot.dart';
+
+import '../widgets/new_bot_input.dart';
+import '../widgets/action_button.dart';
+import '../widgets/bot_tile.dart';
+import '../widgets/expandable_fab.dart';
+import '../widgets/explain_new_bot_illustration.dart';
 
 class ChatsListScreen extends StatefulWidget {
   ChatsListScreen(this.client);
@@ -34,9 +35,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   QRViewController controller;
 
   void addBot(BuildContext context, String botLinkBase64) {
-    print(botLinkBase64);
     String botDeepLink = String.fromCharCodes(base64.decode(botLinkBase64));
-    print(botDeepLink);
     String botLink = extractBotLink(Uri.parse(botDeepLink));
     addBotFromUrl(context, botLink, widget.client);
     closeNewBotInput();
@@ -118,7 +117,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     List<Bot> bots = botsProvider.bots.values.toList();
     return Stack(
       children: [
-        bots.length == 0 && MediaQuery.of(context).size.width < 600
+        bots.length == 0 && !isDesktop(context)
             ? ExplainIilustration()
             : botsListView(bots),
         newBotInputBox(),
