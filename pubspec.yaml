@@ -19,6 +19,7 @@ dependencies:
   flutter_svg: ^0.22.0
   qr_code_scanner: ^0.5.2
   emoji_picker: ^0.1.0
+  flutter_native_splash: ^1.2.1
   cupertino_icons: ^1.0.2
   audioplayers: ^0.19.1
 
