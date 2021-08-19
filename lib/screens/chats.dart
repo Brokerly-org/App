@@ -1,3 +1,4 @@
+import 'package:brokerly/screens/qr_scanning.dart';
 import 'package:brokerly/widgets/action_button.dart';
 import 'package:brokerly/widgets/bot_tile.dart';
 import 'package:brokerly/widgets/expandable_fab.dart';
@@ -6,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import '../utils.dart';
-import '../widgets/new_bot_input.dart';
+import '../const.dart';
+import '../models/bot.dart';
 import '../providers/bots_provider.dart';
 import '../services/client.dart';
-import '../models/bot.dart';
-import '../const.dart';
+import '../utils.dart';
+import '../widgets/new_bot_input.dart';
 
 class ChatsListScreen extends StatefulWidget {
   ChatsListScreen(this.client);
@@ -22,10 +23,8 @@ class ChatsListScreen extends StatefulWidget {
 }
 
 class _ChatsListScreenState extends State<ChatsListScreen> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   bool showFab = true;
   bool showNewBotInput = false;
-  bool showQr = false;
 
   FocusNode focusNode = FocusNode();
   QRViewController controller;
@@ -46,36 +45,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     setState(() {
       showNewBotInput = true;
       showFab = false;
-      showQr = false;
       focusNode.requestFocus();
-    });
-  }
-
-  void openQrScanner() {
-    setState(() {
-      showQr = true;
-      showNewBotInput = false;
-      showFab = false;
-    });
-  }
-
-  void closeQrScanner() {
-    controller.stopCamera();
-    setState(() {
-      showQr = false;
-      showNewBotInput = false;
-      showFab = true;
-    });
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        String result = scanData.code;
-        addBotFromUrl(context, result, widget.client);
-        closeQrScanner();
-      });
     });
   }
 
@@ -99,7 +69,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
           icon: const Icon(Icons.vpn_key),
         ),
         ActionButton(
-          onPressed: () => _onQRViewCreated(controller),
+          onPressed: onScanClick, //() => _onQRViewCreated(controller),
           icon: const Icon(Icons.qr_code),
         ),
       ],
@@ -115,15 +85,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
             ? ExplainIilustration()
             : botsListView(bots),
         newBotInputBox(),
-        qrScanner(),
+        //qrScanner(),
       ],
     );
-  }
-
-  Widget qrScanner() {
-    return showQr
-        ? QRView(key: qrKey, onQRViewCreated: _onQRViewCreated)
-        : Container();
   }
 
   Widget newBotInputBox() {
@@ -156,5 +120,14 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       controller.dispose();
     }
     super.dispose();
+  }
+
+  void onScanClick() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (BuildContext context) => QRScanningPage(
+                  client: widget.client,
+                )),
+        (Route<dynamic> route) => true);
   }
 }

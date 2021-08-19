@@ -2,10 +2,9 @@ import 'package:brokerly/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'style.dart';
 import 'app_loader.dart';
-
 import 'providers/bots_provider.dart';
+import 'style.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -21,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Brokerly',
       theme: ThemeData(
         primarySwatch: primery,
