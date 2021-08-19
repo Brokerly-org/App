@@ -1,22 +1,21 @@
 import 'dart:convert';
 
+import 'package:brokerly/screens/qr_scanning.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:brokerly/screens/qr_scanning.dart';
 
 import '../const.dart';
-import '../providers/bots_provider.dart';
-import '../services/deep_links.dart';
-import '../services/client.dart';
-import '../utils.dart';
 import '../models/bot.dart';
-
-import '../widgets/new_bot_input.dart';
+import '../providers/bots_provider.dart';
+import '../services/client.dart';
+import '../services/deep_links.dart';
+import '../utils.dart';
 import '../widgets/action_button.dart';
 import '../widgets/bot_tile.dart';
 import '../widgets/expandable_fab.dart';
 import '../widgets/explain_new_bot_illustration.dart';
+import '../widgets/new_bot_input.dart';
 
 class ChatsListScreen extends StatefulWidget {
   ChatsListScreen(this.client);
