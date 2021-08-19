@@ -1,22 +1,30 @@
 class Message {
+  String chatId;
   String data;
-  String sender;
+  String sender; // "bot" or "user"
   DateTime sentAt;
-  // "bot" or "user"
+  bool readStatus;
+  int index;
 
   Message(this.data, this.sender, this.sentAt);
 
   Message.fromDict(Map<String, dynamic> dict) {
-    this.data = dict["data"];
+    this.chatId = dict["chat_id"];
+    this.readStatus = dict["read_status"];
+    this.data = dict["content"];
     this.sender = dict["sender"];
-    this.sentAt = DateTime.parse(dict["sentAt"]);
+    this.index = dict["index"];
+    this.sentAt = DateTime.fromMillisecondsSinceEpoch(dict["created_at"]);
   }
 
   Map<String, dynamic> toDict() {
     Map<String, dynamic> dict = {};
-    dict["data"] = this.data;
+    dict["chat_id"] = this.chatId;
+    dict["read_status"] = this.readStatus;
+    dict["content"] = this.data;
     dict["sender"] = this.sender;
-    dict["sentAt"] = this.sentAt.toIso8601String();
+    dict["index"] = this.index;
+    dict["created_at"] = this.sentAt.millisecondsSinceEpoch;
     return dict;
   }
 }
