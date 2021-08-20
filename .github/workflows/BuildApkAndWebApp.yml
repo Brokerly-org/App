@@ -4,6 +4,9 @@ name: FlutterBuild
 
 # Controls when the workflow will run
 on:
+  push:
+    tags:
+    - '*'
   workflow_dispatch:
 
 jobs:
@@ -25,8 +28,23 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
       
+      - name: Easy Web App files
+        uses: vimtor/action-zip@v1
+        with:
+          files: build/web
+          dest: webapp.zip
+
+      
       - name: Upload web app to release
         uses: actions/upload-artifact@v2
         with:
           name: webapp-build
-          path: build/web
+          path: webapp.zip
+    
+      - name: Create Release - local
+        uses: varun-bst/release-action@v1.7
+        with:
+          artifacts: "app-release.apk,webapp.zip"
+          bodyFile: "Body"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
