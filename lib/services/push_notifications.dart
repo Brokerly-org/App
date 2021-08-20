@@ -29,23 +29,23 @@ Future<void> showNotification(int messagesCount) async {
           ticker: 'New notification from brokerly');
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(0, 'New Messages',
+  await flutterLocalNotificationsPlugin.show(125, 'New Messages',
       'you have $messagesCount new messages...', platformChannelSpecifics,
       payload: 'item x');
 }
 
-void checkForUpdates() async {
+Future<void> checkForUpdates() async {
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
   int messagesCount = 0;
+  showNotification(messagesCount);
   for (String botKey in botKeys) {
     Bot bot = await Cache.loadBot(botKey);
     messagesCount += await client
         .hasUpdates(bot.server)
         .timeout(Duration(seconds: 1), onTimeout: () => 0);
   }
-  if (true) {
-    //messagesCount > 0) {
+  if (messagesCount > 0) {
     showNotification(messagesCount);
   }
 }
@@ -55,7 +55,7 @@ void callbackDispatcher() {
     switch (task) {
       case checkUpdatesTask:
         print("Some simple task");
-        checkForUpdates();
+        await checkForUpdates();
         break;
       case Workmanager.iOSBackgroundTask:
         print("The iOS background fetch was triggered");
