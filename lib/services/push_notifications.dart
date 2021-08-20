@@ -70,6 +70,7 @@ void callbackDispatcher() {
 void initWorkManager() {
   Workmanager().initialize(
     callbackDispatcher,
+    isInDebugMode: true,
   );
 }
 
