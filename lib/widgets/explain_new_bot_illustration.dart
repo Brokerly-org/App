@@ -8,8 +8,10 @@ class ExplainIilustration extends StatelessWidget {
   Widget build(BuildContext context) {
     String svg = 'assets/home_illustrate.svg';
     return Center(
-      child: SvgPicture.asset(svg,
-          semanticsLabel: 'Press on the floating button to add bot'),
+      child: SvgPicture.asset(
+        svg,
+        semanticsLabel: 'Press on the floating button to add bot',
+      ),
     );
   }
 }

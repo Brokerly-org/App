@@ -33,7 +33,7 @@ class BotTile extends StatelessWidget {
         },
         tileColor: Theme.of(context).primaryColor,
         title: Text(bot.title),
-        subtitle: Text(bot.description),
+        subtitle: Text(bot.server.url),
         leading: onlineIndicator(),
         trailing:
             bot.unreadMessages > 0 ? unreadMessagesCounter(context) : null,

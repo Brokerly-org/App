@@ -66,6 +66,20 @@ class Client {
     print('sendMessageSound result is $result');
   }
 
+  Future<int> hasUpdates(Server server) async {
+    Map<String, String> params = {"token": server.userToken};
+    String path = '/user/hast_updates';
+
+    Uri uri;
+    if (server.urlSchema == "http") {
+      uri = Uri.http(server.url, path, params);
+    } else {
+      uri = Uri.https(server.url, path, params);
+    }
+    var response = await http.get(uri);
+    return int.parse(response.body);
+  }
+
   void pullMessagesFromServers(BuildContext context) {
     BotsProvider botsProvider = context.read<BotsProvider>();
     botsProvider.servers.values.forEach((server) {

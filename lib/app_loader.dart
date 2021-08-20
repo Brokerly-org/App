@@ -6,6 +6,7 @@ import 'providers/bots_provider.dart';
 import 'screens/chat.dart';
 import 'screens/chats.dart';
 import 'models/bot.dart';
+import 'services/push_notifications.dart';
 import 'services/client.dart';
 import 'services/cache.dart';
 import 'services/deep_links.dart';
@@ -97,10 +98,15 @@ class _AppLoaderState extends State<AppLoader> {
     initUniLinks(onNewBotLink, onInvalidBotLink);
   }
 
+  void setupBackroundTasks() {
+    setupPushNotificationService();
+  }
+
   @override
   void initState() {
     //Cache.clear();
     super.initState();
     setup();
+    setupBackroundTasks();
   }
 }
