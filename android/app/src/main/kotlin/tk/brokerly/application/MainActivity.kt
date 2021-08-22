@@ -1,4 +1,4 @@
-package com.example.brokerly
+package tk.brokerly.application
 
 import io.flutter.embedding.android.FlutterActivity
 
