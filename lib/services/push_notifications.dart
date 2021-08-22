@@ -45,7 +45,7 @@ Future<void> checkForUpdates() async {
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
   List<String> servers = [];
-  await showNotification(0);
+  await showNotification(10);
 
   List<Future<int>> tasks = [];
   for (String botKey in botKeys) {
