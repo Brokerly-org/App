@@ -81,8 +81,6 @@ void callbackDispatcher() {
           break;
         case Workmanager.iOSBackgroundTask:
           print("The iOS background fetch was triggered");
-          print(
-              "You can access other plugins in the background, for example Directory.getTemporaryDirectory()");
           break;
       }
     } catch (ex) {
@@ -100,13 +98,11 @@ void initWorkManager() {
 }
 
 void registerPullUpdatesTask() {
-  //Workmanager().cancelAll();
   Workmanager().registerPeriodicTask(
     "5",
     checkUpdatesTask,
     frequency: Duration(minutes: 15),
     initialDelay: Duration(seconds: 10),
-    constraints: Constraints(networkType: NetworkType.connected),
     existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 }
