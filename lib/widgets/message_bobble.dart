@@ -42,7 +42,7 @@ class MessageBobble extends StatelessWidget {
   List<Widget> messageWidgets(BuildContext context) {
     List<Widget> messageWidgets = [
       SizedBox(height: 4.0),
-      floatingButton(context, "Open", "open"),
+      // floatingButton(context, "Open", "open"),
     ];
     if (messageWidgets.length <= 1) {
       return [];
