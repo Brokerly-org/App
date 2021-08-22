@@ -32,9 +32,8 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   FocusNode focusNode = FocusNode();
   QRViewController controller;
 
-  void addBot(BuildContext context, String botLinkBase64) {
-    String botDeepLink = String.fromCharCodes(base64.decode(botLinkBase64));
-    String botLink = extractBotLink(Uri.parse(botDeepLink));
+  void addBot(BuildContext context, String longBotLink) {
+    String botLink = extractBotLink(Uri.parse(longBotLink));
     addBotFromUrl(context, botLink, widget.client);
     closeNewBotInput();
   }
