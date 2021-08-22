@@ -53,11 +53,20 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     });
   }
 
+  void onScanClick() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => QRScanningPage(
+          client: widget.client,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: title),
-      //drawer: Drawer(),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: showFab ? newFab(context) : null,
       body: body(context),
@@ -70,10 +79,10 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       children: [
         ActionButton(
           onPressed: () => openNewBotInput(context),
-          icon: const Icon(Icons.vpn_key),
+          icon: const Icon(Icons.add_link),
         ),
         ActionButton(
-          onPressed: onScanClick, //() => _onQRViewCreated(controller),
+          onPressed: onScanClick,
           icon: const Icon(Icons.qr_code),
         ),
       ],
@@ -89,7 +98,6 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
             ? ExplainIilustration()
             : botsListView(bots),
         newBotInputBox(),
-        //qrScanner(),
       ],
     );
   }
@@ -124,14 +132,5 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       controller.dispose();
     }
     super.dispose();
-  }
-
-  void onScanClick() {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (BuildContext context) => QRScanningPage(
-                  client: widget.client,
-                )),
-        (Route<dynamic> route) => true);
   }
 }
