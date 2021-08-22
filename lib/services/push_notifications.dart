@@ -37,31 +37,43 @@ Future<void> showNotification(int messagesCount) async {
 Future<void> checkForUpdates() async {
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
-  int messagesCount = 0;
-  showNotification(messagesCount);
+  List<String> servers = [];
+  await showNotification(0);
+
+  List<Future<int>> tasks = [];
   for (String botKey in botKeys) {
     Bot bot = await Cache.loadBot(botKey);
-    messagesCount += await client
+    if (servers.contains(bot.server.url)) {
+      continue;
+    }
+    tasks.add(client
         .hasUpdates(bot.server)
-        .timeout(Duration(seconds: 1), onTimeout: () => 0);
+        .timeout(Duration(seconds: 2), onTimeout: () => 0));
+    servers.add(bot.server.url);
   }
+  List<int> serverUpdates = await Future.wait<int>(tasks);
+  int messagesCount = serverUpdates.reduce((value, element) => value + element);
   if (messagesCount > 0) {
-    showNotification(messagesCount);
+    await showNotification(messagesCount);
   }
 }
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case checkUpdatesTask:
-        print("Some simple task");
-        await checkForUpdates();
-        break;
-      case Workmanager.iOSBackgroundTask:
-        print("The iOS background fetch was triggered");
-        print(
-            "You can access other plugins in the background, for example Directory.getTemporaryDirectory()");
-        break;
+    try {
+      switch (task) {
+        case checkUpdatesTask:
+          print("Some simple task");
+          await checkForUpdates();
+          break;
+        case Workmanager.iOSBackgroundTask:
+          print("The iOS background fetch was triggered");
+          print(
+              "You can access other plugins in the background, for example Directory.getTemporaryDirectory()");
+          break;
+      }
+    } catch (ex) {
+      print(ex);
     }
     return Future.value(true);
   });

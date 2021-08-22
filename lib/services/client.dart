@@ -68,7 +68,7 @@ class Client {
 
   Future<int> hasUpdates(Server server) async {
     Map<String, String> params = {"token": server.userToken};
-    String path = '/user/hast_updates';
+    String path = '/user/has_updates';
 
     Uri uri;
     if (server.urlSchema == "http") {
