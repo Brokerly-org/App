@@ -16,25 +16,74 @@ class MessageBobble extends StatelessWidget {
     double bubbleMaxWidth = isLargScreen
         ? (screenWidth - 300) * screenFraction
         : screenWidth * screenFraction;
+    return messageAndWidget(myMessage, bubbleMaxWidth, context);
+  }
+
+  Row messageAndWidget(
+      bool myMessage, double bubbleMaxWidth, BuildContext context) {
     return Row(
       mainAxisAlignment:
           myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         IntrinsicWidth(
           stepWidth: 10.0,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 12.0),
-            padding: EdgeInsets.all(10.0),
-            constraints: BoxConstraints(maxWidth: bubbleMaxWidth),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(14)),
-                color: myMessage
-                    ? Theme.of(context).buttonColor
-                    : Theme.of(context).primaryColor),
-            child: content(context),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              contentBubble(bubbleMaxWidth, myMessage, context),
+              if (!myMessage) ...messageWidgets(context)
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  List<Widget> messageWidgets(BuildContext context) {
+    List<Widget> messageWidgets = [
+      SizedBox(height: 4.0),
+      floatingButton(context, "Open", "open"),
+    ];
+    if (messageWidgets.length <= 1) {
+      return [];
+    }
+    return messageWidgets;
+  }
+
+  Container contentBubble(
+      double bubbleMaxWidth, bool myMessage, BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      padding: EdgeInsets.all(10.0),
+      constraints: BoxConstraints(maxWidth: bubbleMaxWidth),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          color: myMessage
+              ? Theme.of(context).buttonColor
+              : Theme.of(context).primaryColor),
+      child: content(context),
+    );
+  }
+
+  Widget floatingButton(BuildContext context, String text, String data) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: RawMaterialButton(
+          onPressed: () {},
+          child: Container(
+            height: 40,
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.blueGrey.withOpacity(0.25),
+            ),
+            child: Text(text),
+          ),
+        ),
+      ),
     );
   }
 
@@ -63,7 +112,7 @@ class MessageBobble extends StatelessWidget {
       children: [
         SizedBox(width: 20.0),
         Text(
-          "13:00 AM",
+          "${message.sentAt.hour}:${message.sentAt.minute}",
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w400,

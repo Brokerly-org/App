@@ -42,6 +42,7 @@ Future<void> showNotification(int messagesCount) async {
 }
 
 Future<void> checkForUpdates() async {
+  print("Run backround");
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
   List<String> servers = [];
@@ -58,7 +59,7 @@ Future<void> checkForUpdates() async {
     servers.add(bot.server.url);
   }
   List<int> serverUpdates = await Future.wait<int>(tasks)
-      .timeout(Duration(seconds: 9), onTimeout: () => [200]);
+      .timeout(Duration(seconds: 9), onTimeout: () => [0]);
   int messagesCount = serverUpdates.reduce((value, element) => value + element);
   if (messagesCount > 0) {
     await showNotification(messagesCount);
@@ -70,7 +71,12 @@ void callbackDispatcher() {
     try {
       switch (task) {
         case checkUpdatesTask:
-          print("Some simple task");
+          Workmanager().registerOneOffTask(
+            "task ${DateTime.now().millisecondsSinceEpoch}",
+            checkUpdatesTask,
+            initialDelay: Duration(minutes: 1),
+            constraints: Constraints(networkType: NetworkType.connected),
+          );
           await checkForUpdates().timeout(Duration(seconds: 10));
           break;
         case Workmanager.iOSBackgroundTask:
@@ -89,16 +95,19 @@ void callbackDispatcher() {
 void initWorkManager() {
   Workmanager().initialize(
     callbackDispatcher,
-    //isInDebugMode: true,
+    isInDebugMode: true,
   );
 }
 
 void registerPullUpdatesTask() {
+  //Workmanager().cancelAll();
   Workmanager().registerPeriodicTask(
     "5",
     checkUpdatesTask,
     frequency: Duration(minutes: 15),
+    initialDelay: Duration(seconds: 10),
     constraints: Constraints(networkType: NetworkType.connected),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 }
 
