@@ -22,16 +22,23 @@ final InitializationSettings initializationSettings = InitializationSettings(
 
 Future<void> showNotification(int messagesCount) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails('BrokerlyNotificationsChannel1',
-          'BrokerlyNotifications', 'Notifications for brokerly',
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'New notification from brokerly');
+      AndroidNotificationDetails(
+    'BrokerlyNotificationsChannel1',
+    'BrokerlyNotifications',
+    'Notifications for brokerly',
+    importance: Importance.max,
+    priority: Priority.high,
+    ticker: 'New notification from brokerly',
+    enableLights: true,
+    enableVibration: true,
+    visibility: NotificationVisibility.public,
+    channelShowBadge: true,
+  );
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(125, 'New Messages',
+  return await flutterLocalNotificationsPlugin.show(125, 'New Messages',
       'you have $messagesCount new messages...', platformChannelSpecifics,
-      payload: 'item x');
+      payload: '$messagesCount');
 }
 
 Future<void> checkForUpdates() async {
@@ -51,7 +58,8 @@ Future<void> checkForUpdates() async {
         .timeout(Duration(seconds: 2), onTimeout: () => 0));
     servers.add(bot.server.url);
   }
-  List<int> serverUpdates = await Future.wait<int>(tasks);
+  List<int> serverUpdates = await Future.wait<int>(tasks)
+      .timeout(Duration(seconds: 5), onTimeout: () => [2]);
   int messagesCount = serverUpdates.reduce((value, element) => value + element);
   if (messagesCount > 0) {
     await showNotification(messagesCount);
@@ -64,7 +72,7 @@ void callbackDispatcher() {
       switch (task) {
         case checkUpdatesTask:
           print("Some simple task");
-          await checkForUpdates();
+          await checkForUpdates().timeout(Duration(seconds: 10));
           break;
         case Workmanager.iOSBackgroundTask:
           print("The iOS background fetch was triggered");
@@ -82,7 +90,7 @@ void callbackDispatcher() {
 void initWorkManager() {
   Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true,
+    //isInDebugMode: true,
   );
 }
 
@@ -91,6 +99,7 @@ void registerPullUpdatesTask() {
     "5",
     checkUpdatesTask,
     frequency: Duration(minutes: 15),
+    constraints: Constraints(networkType: NetworkType.connected),
   );
 }
 
