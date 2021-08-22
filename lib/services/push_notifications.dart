@@ -45,7 +45,6 @@ Future<void> checkForUpdates() async {
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
   List<String> servers = [];
-  await showNotification(10);
 
   List<Future<int>> tasks = [];
   for (String botKey in botKeys) {
@@ -55,11 +54,11 @@ Future<void> checkForUpdates() async {
     }
     tasks.add(client
         .hasUpdates(bot.server)
-        .timeout(Duration(seconds: 2), onTimeout: () => 0));
+        .timeout(Duration(seconds: 5), onTimeout: () => 0));
     servers.add(bot.server.url);
   }
   List<int> serverUpdates = await Future.wait<int>(tasks)
-      .timeout(Duration(seconds: 5), onTimeout: () => [2]);
+      .timeout(Duration(seconds: 9), onTimeout: () => [200]);
   int messagesCount = serverUpdates.reduce((value, element) => value + element);
   if (messagesCount > 0) {
     await showNotification(messagesCount);
