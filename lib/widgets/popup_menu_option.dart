@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 Widget PopupMenuOption(
     BuildContext context, String value, String text, IconData icon) {
   return PopupMenuItem<String>(
-    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       Icon(
         icon,
         color: Theme.of(context).backgroundColor,

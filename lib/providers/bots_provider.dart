@@ -6,6 +6,7 @@ import '../models/bot.dart';
 
 class BotsProvider extends ChangeNotifier {
   Map<String, Bot> bots = {};
+  Map<String, int> serverBotsCount = {};
   Map<String, Server> servers = {};
   String selectedBotName;
 
@@ -19,6 +20,18 @@ class BotsProvider extends ChangeNotifier {
     bots[bot.botname] = bot;
     if (!servers.containsKey(bot.server.url)) {
       servers[bot.server.url] = bot.server;
+      serverBotsCount[bot.server.url] = 1;
+    } else {
+      serverBotsCount[bot.server.url] += 1;
+    }
+    notifyListeners();
+  }
+
+  void removeBot(Bot bot) {
+    this.bots.remove(bot.botname);
+    this.serverBotsCount[bot.server.url] -= 1;
+    if (this.serverBotsCount[bot.server.url] <= 0) {
+      this.servers.remove(bot.server.url);
     }
     notifyListeners();
   }

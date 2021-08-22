@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:brokerly/services/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -65,10 +66,15 @@ class ChatScreen extends StatelessWidget {
     }
   }
 
+  void jumpDown() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        scrollController.jumpTo(scrollController.position.maxScrollExtent));
+    WidgetsBinding.instance.addPostFrameCallback((_) => jumpDown());
     loadRouteArguments(context);
     BotsProvider botsProvider = context.watch<BotsProvider>();
     Bot bot = botsProvider.bots[botname];
@@ -121,19 +127,30 @@ class ChatScreen extends StatelessWidget {
 
   PopupMenuButton<String> chatActions(BuildContext context, Bot bot) {
     return PopupMenuButton(
-      onSelected: (String selected) {
+      onSelected: (String selected) async {
         if (selected == "share") {
           Share.share(bot.shareLink());
+        } else if (selected == "delete") {
+          Navigator.pop(context);
+          print("delete bot: ${await Cache.removeBot(bot)}");
+          showMessage(context, "Bot ${bot.botname} chat deleted");
+          context.read<BotsProvider>().removeBot(bot);
         } else {
           showMessage(context, "<$selected> Not support yet.");
         }
       },
       itemBuilder: (BuildContext context) {
         return [
-          PopupMenuOption(context, "share", "Share", Icons.share),
-          PopupMenuOption(context, "mute", "Mute", Icons.volume_off),
-          PopupMenuOption(context, "block", "Block", Icons.block),
-          PopupMenuOption(context, "report", "Report", Icons.report),
+          PopupMenuOption(context, "share", "Share bot", Icons.share_outlined),
+          PopupMenuOption(context, "mute", "Disable Notifications",
+              Icons.volume_off_outlined),
+          PopupMenuOption(
+              context, "clear", "Clear history", Icons.layers_clear_outlined),
+          PopupMenuOption(context, "block", "Block bot", Icons.block_outlined),
+          PopupMenuOption(
+              context, "report", "Report bot", Icons.report_outlined),
+          PopupMenuOption(
+              context, "delete", "Delete chat", Icons.delete_outlined),
         ];
       },
     );
