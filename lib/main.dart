@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
                   child: child,
                 );
               },
-              transitionDuration: Duration(milliseconds: 100));
+              transitionDuration: Duration(milliseconds: 300));
         }
         // Unknown route
         return null;
