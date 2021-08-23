@@ -2,8 +2,8 @@
 Application to communicate with bots
 
 
-[desktop](imgs\desktop.png)
+![desktop](imgs/desktop.png)
 
-[chats](imgs\chats.jpg)
+![chats](imgs/chats.jpg)
 
-[chat](imgs\chat.jpg)
+![chat](imgs/chat.jpg)
