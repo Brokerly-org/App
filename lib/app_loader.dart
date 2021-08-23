@@ -1,3 +1,4 @@
+import 'package:brokerly/models/server.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +22,8 @@ class AppLoader extends StatefulWidget {
 class _AppLoaderState extends State<AppLoader> {
   Client client = Client();
 
-  void pullingLoop() async {
-    while (true) {
-      await Future.delayed(Duration(seconds: 1));
-      client.pullMessagesFromServers(context);
-    }
+  void connectToServers(BuildContext context) {
+    Client().connectToServers(context);
   }
 
   void checkBotsStatus() async {
@@ -93,7 +91,7 @@ class _AppLoaderState extends State<AppLoader> {
 
   void setup() async {
     await loadBotsFromCache();
-    pullingLoop();
+    connectToServers(context);
     checkBotsStatus();
     initUniLinks(onNewBotLink, onInvalidBotLink);
   }

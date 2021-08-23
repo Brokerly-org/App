@@ -98,6 +98,7 @@ void initWorkManager() {
 }
 
 void registerPullUpdatesTask() {
+  //Workmanager().cancelAll();
   Workmanager().registerPeriodicTask(
     "5",
     checkUpdatesTask,
