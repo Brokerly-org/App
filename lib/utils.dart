@@ -70,6 +70,7 @@ void addBotFromUrl(BuildContext context, String url, Client client) async {
   }
   Cache.saveBot(newBot);
   botsProvider.addBot(newBot);
+  Client().connectToServer(context, server);
 }
 
 bool isDesktop(BuildContext context) {

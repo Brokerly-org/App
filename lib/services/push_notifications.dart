@@ -98,13 +98,11 @@ void initWorkManager() {
 }
 
 void registerPullUpdatesTask() {
-  //Workmanager().cancelAll();
-  Workmanager().registerPeriodicTask(
+  Workmanager().registerOneOffTask(
     "5",
     checkUpdatesTask,
-    frequency: Duration(minutes: 15),
-    initialDelay: Duration(seconds: 10),
-    existingWorkPolicy: ExistingWorkPolicy.replace,
+    initialDelay: Duration(minutes: 1),
+    existingWorkPolicy: ExistingWorkPolicy.keep,
   );
 }
 
