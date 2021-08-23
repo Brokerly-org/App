@@ -102,7 +102,7 @@ void registerPullUpdatesTask() {
     "5",
     checkUpdatesTask,
     initialDelay: Duration(minutes: 1),
-    existingWorkPolicy: ExistingWorkPolicy.keep,
+    existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 }
 
