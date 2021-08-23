@@ -1,3 +1,5 @@
+import 'message_widget.dart';
+
 class Message {
   String chatId;
   String data;
@@ -5,6 +7,7 @@ class Message {
   DateTime sentAt;
   bool readStatus;
   int index;
+  MessageWidget messageWidget;
 
   Message(this.data, this.sender, this.sentAt);
 
@@ -15,6 +18,8 @@ class Message {
     this.sender = dict["sender"];
     this.index = dict["index"];
     this.sentAt = DateTime.fromMillisecondsSinceEpoch(dict["created_at"]);
+    this.messageWidget =
+        dict["widget"] != null ? MessageWidget.fromDict(dict["widget"]) : null;
   }
 
   Map<String, dynamic> toDict() {
@@ -25,6 +30,8 @@ class Message {
     dict["sender"] = this.sender;
     dict["index"] = this.index;
     dict["created_at"] = this.sentAt.millisecondsSinceEpoch;
+    dict["widget"] =
+        this.messageWidget != null ? this.messageWidget.toDict() : null;
     return dict;
   }
 }
