@@ -109,7 +109,7 @@ class Client {
       "password": "secret",
       "name": "normal_name_$userId",
     };
-    String path = "/user/register";
+    String path = "/auth/register";
     Uri uri;
     if (scema == "http") {
       uri = Uri.http(serverUrl, path, queryParams);
