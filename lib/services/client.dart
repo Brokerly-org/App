@@ -41,7 +41,6 @@ class Client {
     connections[serverUrl] = webSocket;
     webSocket.stream.listen((message) {
       List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
-      print("recv: $messages");
       messages.forEach((botMessages) {
         this.onNewUpdate(context, botMessages);
       });
