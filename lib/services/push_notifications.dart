@@ -98,12 +98,14 @@ void initWorkManager() {
 }
 
 void registerPullUpdatesTask() {
-  Workmanager().registerOneOffTask(
-    "5",
-    checkUpdatesTask,
-    initialDelay: Duration(minutes: 1),
-    existingWorkPolicy: ExistingWorkPolicy.replace,
-  );
+  Workmanager().cancelAll().then((v) {
+    Workmanager().registerOneOffTask(
+      "5",
+      checkUpdatesTask,
+      initialDelay: Duration(minutes: 1),
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+    );
+  });
 }
 
 Future<bool> onDidReceiveLocalNotification(

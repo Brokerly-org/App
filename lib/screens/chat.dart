@@ -39,11 +39,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool showScrollToBottomButton = false;
 
-  void scrollDown() {
-    scrollController.animateTo(scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-  }
-
   void playSendSound() async {
     // TODO load data once and forever for that widget
     AudioPlayer audioPlayer = AudioPlayer();
@@ -76,6 +71,11 @@ class _ChatScreenState extends State<ChatScreen> {
     if (scrollController.hasClients) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
+  }
+
+  void scrollDown() {
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
   @override
@@ -119,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onPressed: this.scrollDown,
               child: Icon(Icons.keyboard_arrow_down),
               mini: true,
-              backgroundColor: Theme.of(context).buttonColor,
+              elevation: 20.0,
             ),
           )
         : null;
