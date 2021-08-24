@@ -23,15 +23,21 @@ class ChatScreenArguments {
   ChatScreenArguments(this.botname, this.client);
 }
 
-// ignore: must_be_immutable
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  String botname;
+  Client client;
+  ChatScreen({this.botname, this.client});
+
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
   final ScrollController scrollController =
       ScrollController(keepScrollOffset: false);
   final MessageBarController messageBarController = MessageBarController();
 
-  String botname;
-  Client client;
-  ChatScreen({this.botname, this.client});
+  bool showScrollToBottomButton = false;
 
   void scrollDown() {
     scrollController.animateTo(scrollController.position.maxScrollExtent,
@@ -58,11 +64,11 @@ class ChatScreen extends StatelessWidget {
   }
 
   void loadRouteArguments(BuildContext context) {
-    if (this.botname == null) {
+    if (this.widget.botname == null) {
       ChatScreenArguments args =
           ModalRoute.of(context).settings.arguments as ChatScreenArguments;
-      this.botname = args.botname;
-      this.client = args.client;
+      widget.botname = args.botname;
+      widget.client = args.client;
     }
   }
 
@@ -73,13 +79,25 @@ class ChatScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    this.scrollController.addListener(() {
+      setState(() {
+        showScrollToBottomButton = scrollController.position.maxScrollExtent -
+                scrollController.offset >
+            300;
+      });
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) => jumpDown());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     loadRouteArguments(context);
     BotsProvider botsProvider = context.watch<BotsProvider>();
-    Bot bot = botsProvider.bots[botname];
+    Bot bot = botsProvider.bots[widget.botname];
 
-    if (!botsProvider.bots.containsKey(botname)) {
+    if (!botsProvider.bots.containsKey(widget.botname)) {
       return emptyChat(context);
     }
     bot.readMessages();
@@ -87,20 +105,38 @@ class ChatScreen extends StatelessWidget {
       appBar:
           AppBar(title: Text(bot.title), actions: [chatActions(context, bot)]),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          // Spacer(flex: 1),
-          Expanded(flex: 80, child: messagesListView(bot)),
-          // Spacer(flex: 1),
-          MessageBar(
-            sendMessage: (String message) =>
-                sendMessage(context, message, client, bot),
-            controller: messageBarController,
-          ),
-        ],
-      ),
+      body: body(bot, context),
+      floatingActionButton: fab(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+    );
+  }
+
+  Widget fab(BuildContext context) {
+    return showScrollToBottomButton
+        ? Container(
+            margin: EdgeInsets.only(bottom: 40),
+            child: FloatingActionButton(
+              onPressed: this.scrollDown,
+              child: Icon(Icons.keyboard_arrow_down),
+              mini: true,
+              backgroundColor: Theme.of(context).buttonColor,
+            ),
+          )
+        : null;
+  }
+
+  Column body(Bot bot, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(flex: 80, child: messagesListView(bot)),
+        MessageBar(
+          sendMessage: (String message) =>
+              sendMessage(context, message, widget.client, bot),
+          controller: messageBarController,
+        ),
+      ],
     );
   }
 
