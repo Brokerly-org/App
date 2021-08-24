@@ -48,6 +48,7 @@ class Client {
   }
 
   void onNewUpdate(BuildContext context, Map<String, dynamic> botMessages) {
+    playRecvSound();
     BotsProvider botsProvider = context.read<BotsProvider>();
     var messages = botMessages["messages"];
     Bot bot = botsProvider.bots[botMessages["chat"]];
