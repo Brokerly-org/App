@@ -81,8 +81,8 @@ class _ExpandableFabState extends State<ExpandableFab>
         i++, angleInDegrees += step) {
       children.add(
         _ExpandingActionButton(
-          directionInDegrees: 90,
-          maxDistance: (widget.distance / count) * (i + 1),
+          directionInDegrees: angleInDegrees,
+          maxDistance: widget.distance, //(widget.distance / count) * (i + 1),
           progress: _expandAnimation,
           child: widget.children[i],
         ),
