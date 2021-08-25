@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:brokerly/screens/qr_scanning.dart';
+import 'package:brokerly/screens/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -63,6 +64,12 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     );
   }
 
+   void onSearchClick() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => SearchPage()),
+        (Route<dynamic> route) => true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +91,10 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
         ActionButton(
           onPressed: onScanClick,
           icon: const Icon(Icons.qr_code),
+        ),
+        ActionButton(
+          onPressed: () => onSearchClick(),
+          icon: const Icon(Icons.search_sharp),
         ),
       ],
     );
