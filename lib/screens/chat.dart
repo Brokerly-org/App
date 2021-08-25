@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:brokerly/services/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -22,20 +23,21 @@ class ChatScreenArguments {
   ChatScreenArguments(this.botname, this.client);
 }
 
-// ignore: must_be_immutable
-class ChatScreen extends StatelessWidget {
-  final ScrollController scrollController =
-      ScrollController(keepScrollOffset: false);
-  final MessageBarController messageBarController = MessageBarController();
-
+class ChatScreen extends StatefulWidget {
   String botname;
   Client client;
   ChatScreen({this.botname, this.client});
 
-  void scrollDown() {
-    scrollController.animateTo(scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-  }
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final ScrollController scrollController =
+      ScrollController(keepScrollOffset: false);
+  final MessageBarController messageBarController = MessageBarController();
+
+  bool showScrollToBottomButton = false;
 
   void playSendSound() async {
     // TODO load data once and forever for that widget
@@ -57,23 +59,45 @@ class ChatScreen extends StatelessWidget {
   }
 
   void loadRouteArguments(BuildContext context) {
-    if (this.botname == null) {
+    if (this.widget.botname == null) {
       ChatScreenArguments args =
           ModalRoute.of(context).settings.arguments as ChatScreenArguments;
-      this.botname = args.botname;
-      this.client = args.client;
+      widget.botname = args.botname;
+      widget.client = args.client;
     }
+  }
+
+  void jumpDown() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
+  }
+
+  void scrollDown() {
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.scrollController.addListener(() {
+      setState(() {
+        showScrollToBottomButton = scrollController.position.maxScrollExtent -
+                scrollController.offset >
+            300;
+      });
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => jumpDown());
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        scrollController.jumpTo(scrollController.position.maxScrollExtent));
     loadRouteArguments(context);
     BotsProvider botsProvider = context.watch<BotsProvider>();
-    Bot bot = botsProvider.bots[botname];
+    Bot bot = botsProvider.bots[widget.botname];
 
-    if (!botsProvider.bots.containsKey(botname)) {
+    if (!botsProvider.bots.containsKey(widget.botname)) {
       return emptyChat(context);
     }
     bot.readMessages();
@@ -81,20 +105,38 @@ class ChatScreen extends StatelessWidget {
       appBar:
           AppBar(title: Text(bot.title), actions: [chatActions(context, bot)]),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          // Spacer(flex: 1),
-          Expanded(flex: 80, child: messagesListView(bot)),
-          // Spacer(flex: 1),
-          MessageBar(
-            sendMessage: (String message) =>
-                sendMessage(context, message, client, bot),
-            controller: messageBarController,
-          ),
-        ],
-      ),
+      body: body(bot, context),
+      floatingActionButton: fab(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+    );
+  }
+
+  Widget fab(BuildContext context) {
+    return showScrollToBottomButton
+        ? Container(
+            margin: EdgeInsets.only(bottom: 40),
+            child: FloatingActionButton(
+              onPressed: this.scrollDown,
+              child: Icon(Icons.keyboard_arrow_down),
+              mini: true,
+              elevation: 20.0,
+            ),
+          )
+        : null;
+  }
+
+  Column body(Bot bot, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(flex: 80, child: messagesListView(bot)),
+        MessageBar(
+          sendMessage: (String message) =>
+              sendMessage(context, message, widget.client, bot),
+          controller: messageBarController,
+        ),
+      ],
     );
   }
 
@@ -121,19 +163,32 @@ class ChatScreen extends StatelessWidget {
 
   PopupMenuButton<String> chatActions(BuildContext context, Bot bot) {
     return PopupMenuButton(
-      onSelected: (String selected) {
+      onSelected: (String selected) async {
         if (selected == "share") {
           Share.share(bot.shareLink());
+        } else if (selected == "delete") {
+          Navigator.pop(context);
+          print("delete bot: ${await Cache.removeBot(bot)}");
+          showMessage(context, "Bot ${bot.botname} chat deleted");
+          context.read<BotsProvider>().removeBot(bot);
+        } else if (selected == "clear") {
+          context.read<BotsProvider>().clearChat(bot.botname);
         } else {
           showMessage(context, "<$selected> Not support yet.");
         }
       },
       itemBuilder: (BuildContext context) {
         return [
-          PopupMenuOption(context, "share", "Share", Icons.share),
-          PopupMenuOption(context, "mute", "Mute", Icons.volume_off),
-          PopupMenuOption(context, "block", "Block", Icons.block),
-          PopupMenuOption(context, "report", "Report", Icons.report),
+          PopupMenuOption(context, "share", "Share bot", Icons.share_outlined),
+          PopupMenuOption(context, "mute", "Disable Notifications",
+              Icons.volume_off_outlined),
+          PopupMenuOption(
+              context, "clear", "Clear history", Icons.layers_clear_outlined),
+          PopupMenuOption(context, "block", "Block bot", Icons.block_outlined),
+          PopupMenuOption(
+              context, "report", "Report bot", Icons.report_outlined),
+          PopupMenuOption(
+              context, "delete", "Delete chat", Icons.delete_outlined),
         ];
       },
     );

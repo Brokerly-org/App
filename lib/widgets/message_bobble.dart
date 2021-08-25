@@ -1,6 +1,12 @@
+import 'package:brokerly/widgets/message_actions/floating_checkbox.dart';
+import 'package:brokerly/widgets/message_actions/floating_slider.dart';
+import 'package:brokerly/widgets/message_actions/floating_switch.dart';
+import 'package:brokerly/widgets/message_actions/floating_time_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../models/message.dart';
+import 'message_actions/floating_button.dart';
+import 'message_actions/floating_date_picker.dart';
 
 class MessageBobble extends StatelessWidget {
   const MessageBobble({Key key, @required this.message}) : super(key: key);
@@ -16,25 +22,64 @@ class MessageBobble extends StatelessWidget {
     double bubbleMaxWidth = isLargScreen
         ? (screenWidth - 300) * screenFraction
         : screenWidth * screenFraction;
+    return messageAndWidget(myMessage, bubbleMaxWidth, context);
+  }
+
+  Row messageAndWidget(
+      bool myMessage, double bubbleMaxWidth, BuildContext context) {
     return Row(
       mainAxisAlignment:
           myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         IntrinsicWidth(
           stepWidth: 10.0,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 12.0),
-            padding: EdgeInsets.all(10.0),
-            constraints: BoxConstraints(maxWidth: bubbleMaxWidth),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(14)),
-                color: myMessage
-                    ? Theme.of(context).buttonColor
-                    : Theme.of(context).primaryColor),
-            child: content(context),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              contentBubble(bubbleMaxWidth, myMessage, context),
+              if (!myMessage) ...messageWidgets(context)
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  List<Widget> messageWidgets(BuildContext context) {
+    List<Widget> messageWidgets = [
+      SizedBox(height: 4.0),
+      FloatingButton(args: {"text": "Open"}),
+      FloatingSlider(
+          args: {"initial": 0.0, "min": 0.0, "max": 100.0, "divisions": 5}),
+      FloatingCheckbox(args: {"initial": false}),
+      FloatingSwitch(args: {"initial": false}),
+      FloatingDatePicker(args: {
+        "initial": DateTime.now(),
+        "first": DateTime(2021, 1, 1, 1),
+        "last": DateTime(2022, 1, 1, 1)
+      }),
+      FloatingTimePicker(args: {"initial": TimeOfDay.now()})
+    ];
+    if (messageWidgets.length <= 1) {
+      return [];
+    } else {
+      messageWidgets.add(SizedBox(height: 5.0));
+    }
+    return messageWidgets;
+  }
+
+  Container contentBubble(
+      double bubbleMaxWidth, bool myMessage, BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      padding: EdgeInsets.all(10.0),
+      constraints: BoxConstraints(maxWidth: bubbleMaxWidth),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          color: myMessage
+              ? Theme.of(context).buttonColor
+              : Theme.of(context).primaryColor),
+      child: content(context),
     );
   }
 
@@ -63,7 +108,7 @@ class MessageBobble extends StatelessWidget {
       children: [
         SizedBox(width: 20.0),
         Text(
-          "13:00 AM",
+          "${message.sentAt.hour}:${message.sentAt.minute}",
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w400,

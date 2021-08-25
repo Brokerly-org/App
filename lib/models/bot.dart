@@ -36,6 +36,12 @@ class Bot {
     Cache.saveBot(this);
   }
 
+  void clear() {
+    this.messages.clear();
+    this.unreadMessages = 0;
+    Cache.saveBot(this);
+  }
+
   Bot.fromDict(Map<String, dynamic> dict) {
     this.botname = dict["botname"];
     this.title = dict["title"];

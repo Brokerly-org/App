@@ -22,46 +22,69 @@ final InitializationSettings initializationSettings = InitializationSettings(
 
 Future<void> showNotification(int messagesCount) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails('BrokerlyNotificationsChannel1',
-          'BrokerlyNotifications', 'Notifications for brokerly',
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'New notification from brokerly');
+      AndroidNotificationDetails(
+    'BrokerlyNotificationsChannel1',
+    'BrokerlyNotifications',
+    'Notifications for brokerly',
+    importance: Importance.max,
+    priority: Priority.high,
+    ticker: 'New notification from brokerly',
+    enableLights: true,
+    enableVibration: true,
+    visibility: NotificationVisibility.public,
+    channelShowBadge: true,
+  );
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(125, 'New Messages',
+  return await flutterLocalNotificationsPlugin.show(125, 'New Messages',
       'you have $messagesCount new messages...', platformChannelSpecifics,
-      payload: 'item x');
+      payload: '$messagesCount');
 }
 
 Future<void> checkForUpdates() async {
+  print("Run backround");
   Client client = Client();
   List<String> botKeys = await Cache.getBotNameList();
-  int messagesCount = 0;
-  showNotification(messagesCount);
+  List<String> servers = [];
+
+  List<Future<int>> tasks = [];
   for (String botKey in botKeys) {
     Bot bot = await Cache.loadBot(botKey);
-    messagesCount += await client
+    if (servers.contains(bot.server.url)) {
+      continue;
+    }
+    tasks.add(client
         .hasUpdates(bot.server)
-        .timeout(Duration(seconds: 1), onTimeout: () => 0);
+        .timeout(Duration(seconds: 5), onTimeout: () => 0));
+    servers.add(bot.server.url);
   }
+  List<int> serverUpdates = await Future.wait<int>(tasks)
+      .timeout(Duration(seconds: 9), onTimeout: () => [0]);
+  int messagesCount = serverUpdates.reduce((value, element) => value + element);
   if (messagesCount > 0) {
-    showNotification(messagesCount);
+    await showNotification(messagesCount);
   }
 }
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case checkUpdatesTask:
-        print("Some simple task");
-        await checkForUpdates();
-        break;
-      case Workmanager.iOSBackgroundTask:
-        print("The iOS background fetch was triggered");
-        print(
-            "You can access other plugins in the background, for example Directory.getTemporaryDirectory()");
-        break;
+    try {
+      switch (task) {
+        case checkUpdatesTask:
+          Workmanager().registerOneOffTask(
+            "task ${DateTime.now().millisecondsSinceEpoch}",
+            checkUpdatesTask,
+            initialDelay: Duration(minutes: 1),
+            constraints: Constraints(networkType: NetworkType.connected),
+          );
+          await checkForUpdates().timeout(Duration(seconds: 10));
+          break;
+        case Workmanager.iOSBackgroundTask:
+          print("The iOS background fetch was triggered");
+          break;
+      }
+    } catch (ex) {
+      print(ex);
     }
     return Future.value(true);
   });
@@ -70,16 +93,19 @@ void callbackDispatcher() {
 void initWorkManager() {
   Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true,
+    //isInDebugMode: true,
   );
 }
 
 void registerPullUpdatesTask() {
-  Workmanager().registerPeriodicTask(
-    "5",
-    checkUpdatesTask,
-    frequency: Duration(minutes: 15),
-  );
+  Workmanager().cancelAll().then((v) {
+    Workmanager().registerOneOffTask(
+      "5",
+      checkUpdatesTask,
+      initialDelay: Duration(minutes: 1),
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+    );
+  });
 }
 
 Future<bool> onDidReceiveLocalNotification(

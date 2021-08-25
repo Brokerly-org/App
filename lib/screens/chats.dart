@@ -33,9 +33,8 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   FocusNode focusNode = FocusNode();
   QRViewController controller;
 
-  void addBot(BuildContext context, String botLinkBase64) {
-    String botDeepLink = String.fromCharCodes(base64.decode(botLinkBase64));
-    String botLink = extractBotLink(Uri.parse(botDeepLink));
+  void addBot(BuildContext context, String longBotLink) {
+    String botLink = extractBotLink(Uri.parse(longBotLink));
     addBotFromUrl(context, botLink, widget.client);
     closeNewBotInput();
   }
@@ -55,11 +54,26 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     });
   }
 
+  void onScanClick() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => QRScanningPage(
+          client: widget.client,
+        ),
+      ),
+    );
+  }
+
+   void onSearchClick() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => SearchPage()),
+        (Route<dynamic> route) => true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: title),
-      //drawer: Drawer(),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: showFab ? newFab(context) : null,
       body: body(context),
@@ -72,10 +86,10 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       children: [
         ActionButton(
           onPressed: () => openNewBotInput(context),
-          icon: const Icon(Icons.vpn_key),
+          icon: const Icon(Icons.add_link),
         ),
         ActionButton(
-          onPressed: onScanClick, //() => _onQRViewCreated(controller),
+          onPressed: onScanClick,
           icon: const Icon(Icons.qr_code),
         ),
         ActionButton(
@@ -95,7 +109,6 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
             ? ExplainIilustration()
             : botsListView(bots),
         newBotInputBox(),
-        //qrScanner(),
       ],
     );
   }
@@ -130,20 +143,5 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       controller.dispose();
     }
     super.dispose();
-  }
-
-  void onScanClick() {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (BuildContext context) => QRScanningPage(
-                  client: widget.client,
-                )),
-        (Route<dynamic> route) => true);
-  }
-
-  void onSearchClick() {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => SearchPage()),
-        (Route<dynamic> route) => true);
   }
 }

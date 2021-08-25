@@ -2,18 +2,63 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:web_socket_channel/io.dart';
+
 import 'package:audioplayers/audioplayers.dart';
-import 'package:brokerly/providers/bots_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import 'package:brokerly/providers/bots_provider.dart';
 import '../models/message.dart';
 import '../models/server.dart';
 import '../models/bot.dart';
 
 class Client {
+  static Map<String, IOWebSocketChannel> connections = {};
+
+  void connectToServers(BuildContext context) {
+    context
+        .read<BotsProvider>()
+        .servers
+        .values
+        .forEach((server) => this.connectToServer(context, server));
+  }
+
+  void connectToServer(BuildContext context, Server server) {
+    String serverUrl =
+        (server.urlSchema == "https" ? "wss://" : "ws://") + server.url;
+    String path = "/user_connect";
+
+    if (connections.containsKey(serverUrl)) {
+      return;
+    }
+    String wsUrl = serverUrl + path + "?" + "token=${server.userToken}";
+    print("Connect to $wsUrl");
+    final IOWebSocketChannel webSocket =
+        IOWebSocketChannel.connect(Uri.parse(wsUrl));
+    connections[serverUrl] = webSocket;
+    webSocket.stream.listen((message) {
+      List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
+      messages.forEach((botMessages) {
+        this.onNewUpdate(context, botMessages);
+      });
+    });
+  }
+
+  void onNewUpdate(BuildContext context, Map<String, dynamic> botMessages) {
+    playRecvSound();
+    BotsProvider botsProvider = context.read<BotsProvider>();
+    var messages = botMessages["messages"];
+    Bot bot = botsProvider.bots[botMessages["chat"]];
+    messages.forEach((messageData) {
+      messageData["created_at"] = (messageData["created_at"] * 1000.0).round();
+      Message message = Message.fromDict(messageData);
+      botsProvider.addMessagesToBot(bot.botname, [message]);
+    });
+  }
+
   Future<void> pushMessageToBot(Bot bot, String message) async {
     Server server = bot.server;
 
@@ -34,29 +79,6 @@ class Client {
     await http.post(uri);
   }
 
-  Future<List<dynamic>> _pullFromServer(Server server) async {
-    Map<String, String> params = {"token": server.userToken};
-    String path = '/user/pull';
-
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
-    var response = await http.get(uri);
-    String responseBodyDecoded = utf8.decode(response.body.codeUnits);
-    Map<String, dynamic> messages;
-    try {
-      messages = json.decode(responseBodyDecoded);
-    } catch (exception) {
-      print(response.body);
-      throw exception;
-    }
-    List<dynamic> messageList = messages["messages"];
-    return messageList;
-  }
-
   void playRecvSound() async {
     // TODO load data once and forever for that widget
     AudioPlayer audioPlayer = AudioPlayer();
@@ -68,7 +90,7 @@ class Client {
 
   Future<int> hasUpdates(Server server) async {
     Map<String, String> params = {"token": server.userToken};
-    String path = '/user/hast_updates';
+    String path = '/user/has_updates';
 
     Uri uri;
     if (server.urlSchema == "http") {
@@ -80,28 +102,6 @@ class Client {
     return int.parse(response.body);
   }
 
-  void pullMessagesFromServers(BuildContext context) {
-    BotsProvider botsProvider = context.read<BotsProvider>();
-    botsProvider.servers.values.forEach((server) {
-      bool playedSound = false;
-      this._pullFromServer(server).then((serverMessages) => {
-            if (serverMessages == null) {serverMessages = []},
-            if (serverMessages.isNotEmpty && !playedSound)
-              {playRecvSound(), playedSound = true},
-            serverMessages.forEach((botMessages) {
-              var messages = botMessages["messages"];
-              Bot bot = botsProvider.bots[botMessages["chat"]];
-              messages.forEach((messageData) {
-                messageData["created_at"] =
-                    (messageData["created_at"] * 1000.0).round();
-                Message message = Message.fromDict(messageData);
-                botsProvider.addMessagesToBot(bot.botname, [message]);
-              });
-            })
-          });
-    });
-  }
-
   Future<String> registerToServer(String scema, String serverUrl) async {
     int userId = math.Random().nextInt(999999);
     Map<String, String> queryParams = {
@@ -109,7 +109,7 @@ class Client {
       "password": "secret",
       "name": "normal_name_$userId",
     };
-    String path = "/user/register";
+    String path = "/auth/register";
     Uri uri;
     if (scema == "http") {
       uri = Uri.http(serverUrl, path, queryParams);

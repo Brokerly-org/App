@@ -75,7 +75,7 @@ class NewBotInput extends StatelessWidget {
         style:
             TextStyle(fontSize: 20, color: Theme.of(context).backgroundColor),
         decoration: InputDecoration.collapsed(
-          hintText: "api key",
+          hintText: "Paste bot url",
           hintStyle: TextStyle(fontSize: 20),
           border: InputBorder.none,
         ),

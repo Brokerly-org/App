@@ -9,11 +9,11 @@ class Cache {
     disk.clear();
   }
 
-  static Future<bool> addBotNameToList(String botname) async {
+  static Future<bool> addBotNameToList(String botKey) async {
     SharedPreferences disk = await SharedPreferences.getInstance();
     List<String> botNames = disk.getStringList("botlist") ?? [];
-    if (!botNames.contains(botname)) {
-      botNames.add(botname);
+    if (!botNames.contains(botKey)) {
+      botNames.add(botKey);
       return await disk.setStringList("botlist", botNames);
     }
     return true;
@@ -43,5 +43,16 @@ class Cache {
     }
     Map<String, dynamic> botDict = json.decode(botJson);
     return Bot.fromDict(botDict);
+  }
+
+  static Future<bool> removeBot(Bot bot) async {
+    SharedPreferences disk = await SharedPreferences.getInstance();
+    List<String> botNames = disk.getStringList("botlist") ?? [];
+    String botKey = bot.server.url + ':' + bot.botname;
+    if (botNames.contains(botKey)) {
+      botNames.remove(botKey);
+      return await disk.setStringList("botlist", botNames);
+    }
+    return false;
   }
 }
