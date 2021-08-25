@@ -29,7 +29,7 @@ class Client {
   void connectToServer(BuildContext context, Server server) {
     String serverUrl =
         (server.urlSchema == "https" ? "wss://" : "ws://") + server.url;
-    String path = "/user_ws/connect";
+    String path = "/user_connect";
 
     if (connections.containsKey(serverUrl)) {
       return;

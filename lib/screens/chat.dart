@@ -171,6 +171,8 @@ class _ChatScreenState extends State<ChatScreen> {
           print("delete bot: ${await Cache.removeBot(bot)}");
           showMessage(context, "Bot ${bot.botname} chat deleted");
           context.read<BotsProvider>().removeBot(bot);
+        } else if (selected == "clear") {
+          context.read<BotsProvider>().clearChat(bot.botname);
         } else {
           showMessage(context, "<$selected> Not support yet.");
         }
