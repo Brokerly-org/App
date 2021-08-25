@@ -67,12 +67,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void jumpDown() {
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    }
-  }
-
   void scrollDown() {
     scrollController.animateTo(scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -88,7 +82,6 @@ class _ChatScreenState extends State<ChatScreen> {
             300;
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => jumpDown());
   }
 
   @override
@@ -205,11 +198,12 @@ class _ChatScreenState extends State<ChatScreen> {
       child: ListView.separated(
         controller: scrollController,
         itemCount: itemCount,
+        reverse: true,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0 || index == itemCount - 1) {
             return SizedBox(height: 5);
           }
-          Message message = bot.messages[index - 1];
+          Message message = bot.messages.reversed.elementAt(index - 1);
           return MessageBobble(message: message);
         },
         separatorBuilder: (BuildContext context, _) => SizedBox(height: 5.0),
