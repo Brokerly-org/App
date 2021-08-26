@@ -1,6 +1,7 @@
 import 'package:brokerly/const.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../utils.dart';
 import '../style.dart';
@@ -19,11 +20,19 @@ class BotTile extends StatelessWidget {
   final Client client;
   final Bot bot;
 
+  String formatDate(DateTime date) {
+    String format = "hh:mm";
+    final DateFormat formatter = DateFormat(format);
+    final String formatted = formatter.format(date);
+    return formatted;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         onTap: () {
+          context.read<BotsProvider>().readBotMessages(bot.botname);
           if (!isDesktop(context)) {
             Navigator.pushNamed(context, '/chat',
                 arguments: ChatScreenArguments(bot.botname, client));
@@ -35,25 +44,44 @@ class BotTile extends StatelessWidget {
         title: Text(bot.title),
         subtitle: Text(bot.server.url),
         leading: onlineIndicator(),
-        trailing:
-            bot.unreadMessages > 0 ? unreadMessagesCounter(context) : null,
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(height: 9),
+            lastMessageDate(),
+            SizedBox(height: 8),
+            bot.unreadMessages > 0
+                ? unreadMessagesCounter(context)
+                : SizedBox(),
+          ],
+        ),
       ),
     );
   }
 
-  ClipRRect unreadMessagesCounter(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(50),
-      child: Container(
-        height: 22,
-        width: 10.0 + bot.unreadMessages.toString().length * 12.0,
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(4.0),
-        decoration: BoxDecoration(
-          color: Theme.of(context).buttonColor,
+  Text lastMessageDate() {
+    return bot.messages.isNotEmpty
+        ? Text(
+            formatDate(bot.messages.last.sentAt),
+            style: TextStyle(
+                fontSize: 12,
+                color: bot.unreadMessages > 0 ? Colors.amber : Colors.white,
+                fontWeight: FontWeight.w300),
+          )
+        : SizedBox();
+  }
+
+  Widget unreadMessagesCounter(BuildContext context) {
+    return CircleAvatar(
+      radius: 8,
+      backgroundColor: Colors.amber,
+      child: FittedBox(
+        child: Padding(
+          padding: EdgeInsets.all(2.0),
+          child: Text("${bot.unreadMessages}",
+              style: TextStyle(color: Colors.black)),
         ),
-        child: Text(bot.unreadMessages.toString(),
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 15)),
       ),
     );
   }

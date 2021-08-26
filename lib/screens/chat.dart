@@ -68,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void scrollDown() {
-    scrollController.animateTo(scrollController.position.maxScrollExtent,
+    scrollController.animateTo(0.0,
         duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
@@ -77,9 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     this.scrollController.addListener(() {
       setState(() {
-        showScrollToBottomButton = scrollController.position.maxScrollExtent -
-                scrollController.offset >
-            300;
+        showScrollToBottomButton = scrollController.offset > 300;
       });
     });
   }
