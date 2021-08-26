@@ -60,14 +60,14 @@ class BotTile extends StatelessWidget {
     );
   }
 
-  Text lastMessageDate() {
+  Widget lastMessageDate() {
     return bot.messages.isNotEmpty
         ? Text(
             formatDate(bot.messages.last.sentAt),
             style: TextStyle(
                 fontSize: 12,
                 color: bot.unreadMessages > 0 ? Colors.amber : Colors.white,
-                fontWeight: FontWeight.w300),
+                fontWeight: FontWeight.w400),
           )
         : SizedBox();
   }

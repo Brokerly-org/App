@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/bot.dart';
@@ -54,5 +55,15 @@ class Cache {
       return await disk.setStringList("botlist", botNames);
     }
     return false;
+  }
+
+  static Future<bool> saveRootSecret(String secret) async {
+    SharedPreferences disk = await SharedPreferences.getInstance();
+    return await disk.setString("rootSecret", secret);
+  }
+
+  static Future<String> loadRootSecret() async {
+    SharedPreferences disk = await SharedPreferences.getInstance();
+    return disk.getString("rootSecret");
   }
 }

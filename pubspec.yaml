@@ -24,6 +24,7 @@ dependencies:
   audioplayers: ^0.18.1
   web_socket_channel: ^2.1.0
   intl: ^0.17.0
+  crypto: ^3.0.1
   
   workmanager: ^0.4.1
   flutter_local_notifications: ^8.1.1+1

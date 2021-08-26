@@ -3,14 +3,15 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:web_socket_channel/io.dart';
-
+import 'package:crypto/crypto.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import 'package:brokerly/providers/bots_provider.dart';
+import 'cache.dart';
+import '../providers/bots_provider.dart';
 import '../models/message.dart';
 import '../models/server.dart';
 import '../models/bot.dart';
@@ -103,11 +104,14 @@ class Client {
   }
 
   Future<String> registerToServer(String scema, String serverUrl) async {
+    String secret = await Cache.loadRootSecret();
     int userId = math.Random().nextInt(999999);
+    String serverPassword =
+        sha256.convert(utf8.encode(secret + ":" + serverUrl)).toString();
     Map<String, String> queryParams = {
-      "email": "somemail$userId@gmail.com",
-      "password": "secret",
-      "name": "normal_name_$userId",
+      "email": "somemail$userId",
+      "password": serverPassword,
+      "name": "username",
     };
     String path = "/auth/register";
     Uri uri;

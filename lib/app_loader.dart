@@ -1,4 +1,4 @@
-import 'package:brokerly/models/server.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,14 +89,26 @@ class _AppLoaderState extends State<AppLoader> {
     print("Invalid $botLink");
   }
 
+  Future<void> loadOrCreateRootSecret() async {
+    if (await Cache.loadRootSecret() != null) {
+      return;
+    }
+    int length = 10;
+    String rootSecret = "";
+    for (var i = 0; i < length; i++) {
+      rootSecret += math.Random.secure().nextInt(9999999).toString();
+    }
+    print("created root secret <$rootSecret>");
+    await Cache.saveRootSecret(rootSecret);
+    return;
+  }
+
   void setup() async {
+    await loadOrCreateRootSecret();
     await loadBotsFromCache();
     connectToServers(context);
     checkBotsStatus();
     initUniLinks(onNewBotLink, onInvalidBotLink);
-  }
-
-  void setupBackroundTasks() {
     setupPushNotificationService();
   }
 
@@ -105,6 +117,5 @@ class _AppLoaderState extends State<AppLoader> {
     //Cache.clear();
     super.initState();
     setup();
-    setupBackroundTasks();
   }
 }
