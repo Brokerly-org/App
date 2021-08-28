@@ -25,41 +25,82 @@ class MessageBobble extends StatelessWidget {
     return messageAndWidget(myMessage, bubbleMaxWidth, context);
   }
 
-  Row messageAndWidget(
+  Widget messageAndWidget(
       bool myMessage, double bubbleMaxWidth, BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        IntrinsicWidth(
-          stepWidth: 10.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              contentBubble(bubbleMaxWidth, myMessage, context),
-              if (!myMessage) ...messageWidgets(context)
-            ],
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      child: Row(
+        mainAxisAlignment:
+            myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          IntrinsicWidth(
+            stepWidth: 10.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                contentBubble(bubbleMaxWidth, myMessage, context),
+                if (!myMessage) ...messageWidgets(context)
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   List<Widget> messageWidgets(BuildContext context) {
+    // List<Widget> messageWidgets = [
+    //   SizedBox(height: 4.0),
+    //   FloatingButton(args: {"text": "Open"}),
+    //   FloatingSlider(
+    //       args: {"initial": 0.0, "min": 0.0, "max": 100.0, "divisions": 5}),
+    //   FloatingCheckbox(args: {"initial": false}),
+    //   FloatingSwitch(args: {"initial": false}),
+    //   FloatingDatePicker(args: {
+    //     "initial": DateTime.now(),
+    //     "first": DateTime(2021, 1, 1, 1),
+    //     "last": DateTime(2022, 1, 1, 1)
+    //   }),
+    //   FloatingTimePicker(args: {"initial": TimeOfDay.now()})
+    // ];
     List<Widget> messageWidgets = [
       SizedBox(height: 4.0),
-      FloatingButton(args: {"text": "Open"}),
-      FloatingSlider(
-          args: {"initial": 0.0, "min": 0.0, "max": 100.0, "divisions": 5}),
-      FloatingCheckbox(args: {"initial": false}),
-      FloatingSwitch(args: {"initial": false}),
-      FloatingDatePicker(args: {
-        "initial": DateTime.now(),
-        "first": DateTime(2021, 1, 1, 1),
-        "last": DateTime(2022, 1, 1, 1)
-      }),
-      FloatingTimePicker(args: {"initial": TimeOfDay.now()})
     ];
+    switch (message.messageWidget.type) {
+      case "button":
+        {
+          messageWidgets.add(FloatingButton(args: message.messageWidget.args));
+        }
+        break;
+      case "slider":
+        {
+          messageWidgets.add(FloatingSlider(args: message.messageWidget.args));
+        }
+        break;
+      case "checkbox":
+        {
+          messageWidgets
+              .add(FloatingCheckbox(args: message.messageWidget.args));
+        }
+        break;
+      case "date_picker":
+        {
+          messageWidgets
+              .add(FloatingDatePicker(args: message.messageWidget.args));
+        }
+        break;
+      case "switch":
+        {
+          messageWidgets.add(FloatingSwitch(args: message.messageWidget.args));
+        }
+        break;
+      case "time_picker":
+        {
+          messageWidgets
+              .add(FloatingTimePicker(args: message.messageWidget.args));
+        }
+        break;
+    }
     if (messageWidgets.length <= 1) {
       return [];
     } else {
@@ -71,7 +112,6 @@ class MessageBobble extends StatelessWidget {
   Container contentBubble(
       double bubbleMaxWidth, bool myMessage, BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.0),
       padding: EdgeInsets.all(10.0),
       constraints: BoxConstraints(maxWidth: bubbleMaxWidth),
       decoration: BoxDecoration(

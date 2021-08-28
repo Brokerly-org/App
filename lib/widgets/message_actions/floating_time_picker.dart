@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'floating_action.dart';
 
 class FloatingTimePicker extends StatefulWidget {
   const FloatingTimePicker({this.args});
@@ -13,9 +15,13 @@ class _FloatingTimePickerState extends State<FloatingTimePicker> {
   TimeOfDay selectedTime;
 
   void selectDate() async {
+    print(widget.args);
     TimeOfDay newTime = await showTimePicker(
       context: context,
-      initialTime: widget.args["initial"],
+      initialTime: TimeOfDay(
+        hour: widget.args["initial_hour"],
+        minute: widget.args["initial_minute"],
+      ),
     );
     setState(() {
       selectedTime = newTime;
@@ -23,38 +29,21 @@ class _FloatingTimePickerState extends State<FloatingTimePicker> {
   }
 
   String formatTime(TimeOfDay time) {
-    return "${time.hour}:${time.minute}";
+    return "${time.hour < 10 ? 0 : ''}${time.hour}:${time.minute < 10 ? 0 : ''}${time.minute}";
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 18.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: RawMaterialButton(
-          onPressed: selectDate,
-          child: Container(
-            height: 40,
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.blueGrey.withOpacity(0.25),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(selectedTime != null
-                    ? formatTime(selectedTime)
-                    : "Select Time"),
-                SizedBox(width: 5.0),
-                Icon(Icons.access_time, color: Colors.white),
-              ],
-            ),
-          ),
-        ),
+    return FloatingAction(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(selectedTime != null ? formatTime(selectedTime) : "Select Time"),
+          SizedBox(width: 5.0),
+          Icon(Icons.access_time, color: Colors.white),
+        ],
       ),
+      onPressed: selectDate,
     );
   }
 }
