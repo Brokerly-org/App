@@ -29,7 +29,7 @@ class _FloatingSliderState extends State<FloatingSlider> {
         min: widget.args["min"],
         max: widget.args["max"],
         divisions: widget.args["divisions"] ?? null,
-        label: sliderValue.toString(),
+        label: (sliderValue ?? widget.args["initial"]).toString(),
       ),
       onPressed: () {},
     );
