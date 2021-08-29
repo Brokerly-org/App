@@ -1,8 +1,10 @@
+import 'package:brokerly/services/common_functions.dart';
 import 'package:brokerly/style.dart';
 import 'package:brokerly/widgets/circle_button.dart';
 import 'package:brokerly/widgets/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -27,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Align(
-              alignment: FractionalOffset(0.95, 0.0),
+              alignment: getExistButtonAlingment(context),
               child: Padding(
                 padding: const EdgeInsets.only(top: 15.0),
                 child: GestureDetector(
@@ -43,22 +45,21 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 21.0),
+              padding: const EdgeInsets.only(left: 21.0, right: 21),
               child: Text(
-                "Search",
+                AppLocalizations.of(context).searchPageTitle,
                 style: TextStyle(
                   fontSize: 26.0,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.left,
               ),
             ),
             SizedBox(
               height: 30,
             ),
             SearchField(
-              hint: "Enter the bot name",
+              hint: AppLocalizations.of(context).botSearchBoxHint,
               iconData: Icons.search,
               onChanged: onChanged,
             ),
@@ -106,7 +107,7 @@ class _SearchPageState extends State<SearchPage> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "No Searches Yet.",
+                    AppLocalizations.of(context).noSearch, //"No Searches Yet.",
                     style: TextStyle(
                       fontSize: 20.0,
                       color: Color(0xFFFFFFFF),
@@ -122,7 +123,8 @@ class _SearchPageState extends State<SearchPage> {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: Text(
-                      "You can find any bot from our bot collection\nType the bot name in the field above.",
+                      AppLocalizations.of(context)
+                          .searchHelp, //"You can find any bot from our bot collection\nType the bot name in the field above.",
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,

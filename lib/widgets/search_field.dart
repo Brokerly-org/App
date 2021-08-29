@@ -21,7 +21,6 @@ class SearchField extends StatelessWidget {
           onChanged(text);
           _fieldData = text;
         },
-        textAlign: TextAlign.left,
         style: TextStyle(
           fontSize: 16.0,
           color: Colors.white,

@@ -1,21 +1,22 @@
 import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:brokerly/services/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
-import 'package:audioplayers/audioplayers.dart';
 
+import '../models/bot.dart';
+import '../models/message.dart';
+import '../providers/bots_provider.dart';
+import '../services/client.dart';
 import '../utils.dart';
 import '../widgets/explain_new_bot_illustration.dart';
 import '../widgets/message_bar.dart';
 import '../widgets/message_bobble.dart';
 import '../widgets/popup_menu_option.dart';
-import '../services/client.dart';
-import '../models/message.dart';
-import '../models/bot.dart';
-import '../providers/bots_provider.dart';
 
 class ChatScreenArguments {
   String botname;
@@ -170,16 +171,24 @@ class _ChatScreenState extends State<ChatScreen> {
       },
       itemBuilder: (BuildContext context) {
         return [
-          PopupMenuOption(context, "share", "Share bot", Icons.share_outlined),
-          PopupMenuOption(context, "mute", "Disable Notifications",
+          PopupMenuOption(context, "share",
+              AppLocalizations.of(context).shareBot, Icons.share_outlined),
+          PopupMenuOption(
+              context,
+              "mute",
+              AppLocalizations.of(context).disNotifications,
               Icons.volume_off_outlined),
           PopupMenuOption(
-              context, "clear", "Clear history", Icons.layers_clear_outlined),
-          PopupMenuOption(context, "block", "Block bot", Icons.block_outlined),
-          PopupMenuOption(
-              context, "report", "Report bot", Icons.report_outlined),
-          PopupMenuOption(
-              context, "delete", "Delete chat", Icons.delete_outlined),
+              context,
+              "clear",
+              AppLocalizations.of(context).clearHistory,
+              Icons.layers_clear_outlined),
+          PopupMenuOption(context, "block",
+              AppLocalizations.of(context).blockBot, Icons.block_outlined),
+          PopupMenuOption(context, "report",
+              AppLocalizations.of(context).reportBot, Icons.report_outlined),
+          PopupMenuOption(context, "delete",
+              AppLocalizations.of(context).deleteChat, Icons.delete_outlined),
         ];
       },
     );

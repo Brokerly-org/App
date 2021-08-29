@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:emoji_picker/emoji_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MessageBarController {
   VoidCallback unfocus;
@@ -121,9 +122,9 @@ class _MessageBarState extends State<MessageBar> {
         style: TextStyle(fontSize: 20),
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "Message",
+            hintText: AppLocalizations.of(context).messageHint,
             hintStyle: TextStyle(
-              fontSize: 20,
+              fontSize: 17.9,
               color: hintColor,
             )),
       ),

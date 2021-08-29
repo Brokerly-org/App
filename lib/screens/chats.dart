@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:brokerly/screens/qr_scanning.dart';
 import 'package:brokerly/screens/search_page.dart';
+import 'package:brokerly/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -73,9 +73,29 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: title),
+      appBar: AppBar(
+        title: Padding(
+          padding: EdgeInsets.only(right: getAppBarTitlePadding()),
+          child: title,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => SettingsScreen()),
+                  (Route<dynamic> route) => true);
+            },
+          )
+        ],
+      ),
       backgroundColor: Theme.of(context).backgroundColor,
-      floatingActionButton: showFab ? newFab(context) : null,
+      floatingActionButton: showFab ? getFab(context) : null,
       body: body(context),
     );
   }
@@ -98,6 +118,23 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
         ),
       ],
     );
+  }
+
+  Widget getFab(BuildContext context) {
+    if (intl.Bidi.isRtlLanguage(Localizations.localeOf(context).languageCode)) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 30.0),
+        child: newFab(context),
+      );
+    }
+    return newFab(context);
+  }
+
+  double getAppBarTitlePadding() {
+    if (intl.Bidi.isRtlLanguage(Localizations.localeOf(context).languageCode)) {
+      return MediaQuery.of(context).size.width - 154;
+    }
+    return 0.0;
   }
 
   Widget body(BuildContext context) {
