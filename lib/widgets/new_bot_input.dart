@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NewBotInput extends StatelessWidget {
   NewBotInput(
@@ -42,7 +43,7 @@ class NewBotInput extends StatelessWidget {
           focusNode.unfocus();
           onAdd(this.textController.value.text);
         },
-        child: Text("Add",
+        child: Text(AppLocalizations.of(context).add,
             style: TextStyle(
                 color: Theme.of(context).buttonColor,
                 fontWeight: FontWeight.bold,
@@ -55,7 +56,7 @@ class NewBotInput extends StatelessWidget {
           String text = (await Clipboard.getData(Clipboard.kTextPlain)).text;
           textController.text = text;
         },
-        child: Text("Paste",
+        child: Text(AppLocalizations.of(context).past,
             style: TextStyle(
                 color: Theme.of(context).buttonColor,
                 fontWeight: FontWeight.bold,
@@ -75,7 +76,7 @@ class NewBotInput extends StatelessWidget {
         style:
             TextStyle(fontSize: 20, color: Theme.of(context).backgroundColor),
         decoration: InputDecoration.collapsed(
-          hintText: "Paste bot url",
+          hintText: AppLocalizations.of(context).botSearchBoxHint,
           hintStyle: TextStyle(fontSize: 20),
           border: InputBorder.none,
         ),

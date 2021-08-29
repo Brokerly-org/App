@@ -1,11 +1,13 @@
 import 'package:brokerly/screens/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'style.dart';
 import 'app_loader.dart';
-import 'screens/chat.dart';
 import 'providers/bots_provider.dart';
+import 'screens/chat.dart';
+import 'style.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -23,6 +25,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Brokerly',
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en', ''), // English, no country code
+        Locale('he', ''), // Hebrew, no country code
+      ],
       theme: ThemeData(
         primarySwatch: primery,
         backgroundColor: backgroundColor,
