@@ -56,8 +56,8 @@ class BotsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateBotLastOnline(String botname, int timestamp) {
-    this.bots[botname].updateLastOnline(timestamp);
+  void updateBotOnlineStatus(String botname, bool status) {
+    this.bots[botname].updateOnlineStatus(status);
     notifyListeners();
   }
 }

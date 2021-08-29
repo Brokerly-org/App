@@ -30,7 +30,7 @@ class _AppLoaderState extends State<AppLoader> {
     while (true) {
       print("update status");
       client.updateBotsStatus(context);
-      await Future.delayed(Duration(seconds: 55));
+      await Future.delayed(Duration(seconds: 20));
     }
   }
 

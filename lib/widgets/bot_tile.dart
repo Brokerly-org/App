@@ -90,9 +90,7 @@ class BotTile extends StatelessWidget {
     return Container(
       width: 6.5,
       decoration: BoxDecoration(
-        color: bot.durationFromLastOnline < kMaxDurationFromLastOnline
-            ? onlineColor
-            : offlineColor,
+        color: bot.onlineStatus ? onlineColor : offlineColor,
         borderRadius: BorderRadius.circular(25),
       ),
     );

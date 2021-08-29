@@ -7,23 +7,19 @@ class Bot {
   String botname;
   String title;
   String description;
-  DateTime lastOnline;
+  bool onlineStatus = false;
   Server server;
   List<Message> messages = [];
   int unreadMessages = 0;
 
   Bot(this.botname, this.title, this.description, this.server);
 
-  Duration get durationFromLastOnline {
-    return DateTime.now().difference(this.lastOnline);
-  }
-
   String shareLink() {
     return "https://brokerly.tk/bot/${server.urlSchema == 'https' ? 'secure' : 'notsecure'}/${this.botname}?url=${this.server.url}";
   }
 
-  void updateLastOnline(int timestamp) {
-    this.lastOnline = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  void updateOnlineStatus(bool status) {
+    this.onlineStatus = status;
   }
 
   void addNewMessages(int newUnreadMessages) {
@@ -46,7 +42,7 @@ class Bot {
     this.botname = dict["botname"];
     this.title = dict["title"];
     this.description = dict["description"];
-    this.lastOnline = DateTime.parse(dict["lastOnline"]);
+    this.onlineStatus = dict["online_status"] ?? false;
     this.server = Server.fromDict(dict["server"]);
     this.messages = (dict["messages"] as List)
         .map((message) => Message.fromDict(message))
@@ -59,7 +55,6 @@ class Bot {
     dict["botname"] = this.botname;
     dict["title"] = this.title;
     dict["description"] = this.description;
-    dict["lastOnline"] = this.lastOnline.toIso8601String();
     dict["server"] = this.server.toDict();
     dict["messages"] =
         this.messages.map((message) => message.toDict()).toList();

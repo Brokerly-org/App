@@ -140,9 +140,8 @@ class Client {
     List<dynamic> statusUpdate = json.decode(response.body);
     statusUpdate.forEach((botStatus) {
       String botname = botStatus["botname"];
-      double value = botStatus["last_online"];
-      double lastOnline = value * 1.0;
-      botsProvider.updateBotLastOnline(botname, lastOnline.round());
+      bool status = botStatus["online_status"];
+      botsProvider.updateBotOnlineStatus(botname, status);
     });
   }
 
@@ -168,13 +167,8 @@ class Client {
     String responseBody = utf8.decode(response.body.codeUnits);
     Map<String, dynamic> botInfo = json.decode(responseBody);
     Bot newBot = Bot(botname, botInfo["title"], botInfo["description"], server);
-    double lastOnline;
-    try {
-      lastOnline = botInfo["last_online"] * 1.0;
-    } catch (exception) {
-      lastOnline = 0.0;
-    }
-    newBot.updateLastOnline(lastOnline.round());
+    bool status = botInfo["online_status"];
+    newBot.updateOnlineStatus(status);
     return newBot;
   }
 }
