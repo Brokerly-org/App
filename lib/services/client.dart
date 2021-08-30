@@ -115,6 +115,44 @@ class Client {
     }
   }
 
+  Future<void> blockBot(Bot bot) async {
+    Server server = bot.server;
+
+    Map<String, String> params = {
+      "token": server.userToken,
+      "botname": bot.botname,
+    };
+    String path = '/user/block_bot';
+
+    Uri uri;
+    if (server.urlSchema == "http") {
+      uri = Uri.http(server.url, path, params);
+    } else {
+      uri = Uri.https(server.url, path, params);
+    }
+
+    await http.post(uri);
+  }
+
+  Future<void> unblockBot(Bot bot) async {
+    Server server = bot.server;
+
+    Map<String, String> params = {
+      "token": server.userToken,
+      "botname": bot.botname,
+    };
+    String path = '/user/unblock_bot';
+
+    Uri uri;
+    if (server.urlSchema == "http") {
+      uri = Uri.http(server.url, path, params);
+    } else {
+      uri = Uri.https(server.url, path, params);
+    }
+
+    await http.post(uri);
+  }
+
   void playRecvSound() async {
     // TODO load data once and forever for that widget
     AudioPlayer audioPlayer = AudioPlayer();

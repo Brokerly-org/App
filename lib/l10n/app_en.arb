@@ -11,6 +11,7 @@
     "disNotifications": "Disable Notifications",
     "clearHistory": "Clear history",
     "blockBot": "Block bot",
+    "unblockBot": "Unblock bot",
     "reportBot": "Report bot",
     "deleteChat": "Delete chat",
     "settingsTitle": "Settings",

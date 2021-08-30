@@ -11,6 +11,7 @@ class Bot {
   Server server;
   List<Message> messages = [];
   int unreadMessages = 0;
+  bool blocked = false;
 
   Bot(this.botname, this.title, this.description, this.server);
 
@@ -38,6 +39,14 @@ class Bot {
     Cache.saveBot(this);
   }
 
+  void block() {
+    this.blocked = true;
+  }
+
+  void unblock() {
+    this.blocked = false;
+  }
+
   Bot.fromDict(Map<String, dynamic> dict) {
     this.botname = dict["botname"];
     this.title = dict["title"];
@@ -48,6 +57,7 @@ class Bot {
         .map((message) => Message.fromDict(message))
         .toList();
     this.unreadMessages = dict["unreadMessages"];
+    this.blocked = dict["blocked"] ?? false;
   }
 
   Map<String, dynamic> toDict() {
@@ -59,6 +69,7 @@ class Bot {
     dict["messages"] =
         this.messages.map((message) => message.toDict()).toList();
     dict["unreadMessages"] = this.unreadMessages;
+    dict["blocked"] = this.blocked;
     return dict;
   }
 }

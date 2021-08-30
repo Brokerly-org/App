@@ -94,8 +94,14 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     bot.readMessages();
     return Scaffold(
-      appBar:
-          AppBar(title: Text(bot.title), actions: [chatActions(context, bot)]),
+      appBar: AppBar(
+          title: Row(
+            children: [
+              Text(bot.title),
+              if (bot.blocked) Text(" (Blocked)"),
+            ],
+          ),
+          actions: [chatActions(context, bot)]),
       backgroundColor: Theme.of(context).backgroundColor,
       body: body(bot, context),
       floatingActionButton: fab(context),
@@ -165,6 +171,14 @@ class _ChatScreenState extends State<ChatScreen> {
           context.read<BotsProvider>().removeBot(bot);
         } else if (selected == "clear") {
           context.read<BotsProvider>().clearChat(bot.botname);
+        } else if (selected == "block") {
+          context.read<BotsProvider>().blockBot(bot.botname);
+          showMessage(context, "Bot blocked!");
+          widget.client.blockBot(bot);
+        } else if (selected == "unblock") {
+          context.read<BotsProvider>().unblockBot(bot.botname);
+          widget.client.unblockBot(bot);
+          showMessage(context, "Bot unblocked!");
         } else {
           showMessage(context, "<$selected> Not support yet.");
         }
@@ -183,8 +197,11 @@ class _ChatScreenState extends State<ChatScreen> {
               "clear",
               AppLocalizations.of(context).clearHistory,
               Icons.layers_clear_outlined),
-          PopupMenuOption(context, "block",
-              AppLocalizations.of(context).blockBot, Icons.block_outlined),
+          bot.blocked == false
+              ? PopupMenuOption(context, "block",
+                  AppLocalizations.of(context).blockBot, Icons.block_outlined)
+              : PopupMenuOption(context, "unblock",
+                  AppLocalizations.of(context).unblockBot, Icons.lock_open),
           PopupMenuOption(context, "report",
               AppLocalizations.of(context).reportBot, Icons.report_outlined),
           PopupMenuOption(context, "delete",

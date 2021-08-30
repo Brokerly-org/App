@@ -38,8 +38,23 @@ class BotsProvider extends ChangeNotifier {
 
   void addMessagesToBot(String botname, List<Message> messages) {
     Bot bot = this.bots[botname];
+    if (bot.blocked) {
+      return;
+    }
     bot.messages.addAll(messages);
     bot.addNewMessages(messages.length);
+    notifyListeners();
+  }
+
+  void blockBot(String botname) {
+    Bot bot = this.bots[botname];
+    bot.block();
+    notifyListeners();
+  }
+
+  void unblockBot(String botname) {
+    Bot bot = this.bots[botname];
+    bot.unblock();
     notifyListeners();
   }
 
