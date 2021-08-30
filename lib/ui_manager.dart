@@ -44,17 +44,17 @@ class UIManager {
       }
       server = Server(uri.authority, uri.scheme, userToken);
       print("registered to server ${uri.authority}");
-
-      String botname = uri.queryParameters["botname"];
-      Bot newBot = await Client().fetchBot(botname, server);
-      if (newBot == null) {
-        showError(context, "Bot $botname does not exists on this server");
-        return;
-      }
-      Cache.saveBot(newBot);
-      botsProvider.addBot(newBot);
-      Client().connectToServer(context, server);
     }
+
+    String botname = uri.queryParameters["botname"];
+    Bot newBot = await Client().fetchBot(botname, server);
+    if (newBot == null) {
+      showError(context, "Bot $botname does not exists on this server");
+      return;
+    }
+    Cache.saveBot(newBot);
+    botsProvider.addBot(newBot);
+    Client().connectToServer(context, server);
   }
 
   static void removeBot(BuildContext context, Bot bot) {
