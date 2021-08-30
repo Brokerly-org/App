@@ -1,10 +1,13 @@
+import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
 import 'floating_action.dart';
 
 class FloatingCheckbox extends StatefulWidget {
-  const FloatingCheckbox({this.args});
+  const FloatingCheckbox({this.args, this.bot});
   final Map<String, dynamic> args;
+  final Bot bot;
 
   @override
   _FloatingCheckboxState createState() => _FloatingCheckboxState();
@@ -17,6 +20,11 @@ class _FloatingCheckboxState extends State<FloatingCheckbox> {
     setState(() {
       checkboxValue = newValue;
     });
+    sendCallback(newValue);
+  }
+
+  void sendCallback(dynamic data) {
+    Client().pushCallbackDataToBot(widget.bot, data);
   }
 
   @override

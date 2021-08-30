@@ -92,6 +92,29 @@ class Client {
     await http.post(uri);
   }
 
+  Future<void> pushCallbackDataToBot(Bot bot, dynamic callback) async {
+    Server server = bot.server;
+
+    Map<String, String> params = {
+      "token": server.userToken,
+      "callback_data": callback.toString(),
+      "botname": bot.botname,
+    };
+    String path = '/user/callback';
+
+    Uri uri;
+    if (server.urlSchema == "http") {
+      uri = Uri.http(server.url, path, params);
+    } else {
+      uri = Uri.https(server.url, path, params);
+    }
+
+    var response = await http.post(uri).timeout(Duration(seconds: 20));
+    if (response.statusCode != 200) {
+      throw "callback faild"; //TODO: change to real exception
+    }
+  }
+
   void playRecvSound() async {
     // TODO load data once and forever for that widget
     AudioPlayer audioPlayer = AudioPlayer();

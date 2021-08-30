@@ -1,3 +1,4 @@
+import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/widgets/message_actions/floating_checkbox.dart';
 import 'package:brokerly/widgets/message_actions/floating_slider.dart';
 import 'package:brokerly/widgets/message_actions/floating_switch.dart';
@@ -9,8 +10,10 @@ import 'message_actions/floating_button.dart';
 import 'message_actions/floating_date_picker.dart';
 
 class MessageBobble extends StatelessWidget {
-  const MessageBobble({Key key, @required this.message}) : super(key: key);
+  const MessageBobble({Key key, @required this.message, @required this.bot})
+      : super(key: key);
 
+  final Bot bot;
   final Message message;
 
   @override
@@ -69,35 +72,38 @@ class MessageBobble extends StatelessWidget {
     switch (message.messageWidget.type) {
       case "button":
         {
-          messageWidgets.add(FloatingButton(args: message.messageWidget.args));
+          messageWidgets
+              .add(FloatingButton(args: message.messageWidget.args, bot: bot));
         }
         break;
       case "slider":
         {
-          messageWidgets.add(FloatingSlider(args: message.messageWidget.args));
+          messageWidgets
+              .add(FloatingSlider(args: message.messageWidget.args, bot: bot));
         }
         break;
       case "checkbox":
         {
-          messageWidgets
-              .add(FloatingCheckbox(args: message.messageWidget.args));
+          messageWidgets.add(
+              FloatingCheckbox(args: message.messageWidget.args, bot: bot));
         }
         break;
       case "date_picker":
         {
-          messageWidgets
-              .add(FloatingDatePicker(args: message.messageWidget.args));
+          messageWidgets.add(
+              FloatingDatePicker(args: message.messageWidget.args, bot: bot));
         }
         break;
       case "switch":
         {
-          messageWidgets.add(FloatingSwitch(args: message.messageWidget.args));
+          messageWidgets
+              .add(FloatingSwitch(args: message.messageWidget.args, bot: bot));
         }
         break;
       case "time_picker":
         {
-          messageWidgets
-              .add(FloatingTimePicker(args: message.messageWidget.args));
+          messageWidgets.add(
+              FloatingTimePicker(args: message.messageWidget.args, bot: bot));
         }
         break;
     }

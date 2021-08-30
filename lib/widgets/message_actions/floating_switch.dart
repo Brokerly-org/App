@@ -1,10 +1,13 @@
+import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
 import 'floating_action.dart';
 
 class FloatingSwitch extends StatefulWidget {
-  const FloatingSwitch({this.args});
+  const FloatingSwitch({this.args, this.bot});
   final Map<String, dynamic> args;
+  final Bot bot;
 
   @override
   _FloatingSwitchState createState() => _FloatingSwitchState();
@@ -17,6 +20,11 @@ class _FloatingSwitchState extends State<FloatingSwitch> {
     setState(() {
       switchValue = newValue;
     });
+    sendCallback(newValue);
+  }
+
+  void sendCallback(dynamic data) {
+    Client().pushCallbackDataToBot(widget.bot, data);
   }
 
   @override

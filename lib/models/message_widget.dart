@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class MessageWidget {
   String type;
   Map<String, dynamic> args;

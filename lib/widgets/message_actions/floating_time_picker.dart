@@ -1,11 +1,13 @@
+import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'floating_action.dart';
 
 class FloatingTimePicker extends StatefulWidget {
-  const FloatingTimePicker({this.args});
+  const FloatingTimePicker({this.args, this.bot});
   final Map<String, dynamic> args;
+  final Bot bot;
 
   @override
   _FloatingTimePickerState createState() => _FloatingTimePickerState();
@@ -26,6 +28,11 @@ class _FloatingTimePickerState extends State<FloatingTimePicker> {
     setState(() {
       selectedTime = newTime;
     });
+    sendCallback(newTime);
+  }
+
+  void sendCallback(dynamic data) {
+    Client().pushCallbackDataToBot(widget.bot, data);
   }
 
   String formatTime(TimeOfDay time) {

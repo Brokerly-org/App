@@ -1,11 +1,14 @@
+import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'floating_action.dart';
 
 class FloatingDatePicker extends StatefulWidget {
-  const FloatingDatePicker({this.args});
+  const FloatingDatePicker({this.args, this.bot});
   final Map<String, dynamic> args;
+  final Bot bot;
 
   @override
   _FloatingDatePickerState createState() => _FloatingDatePickerState();
@@ -32,6 +35,11 @@ class _FloatingDatePickerState extends State<FloatingDatePicker> {
     setState(() {
       selectedDate = newDate;
     });
+    sendCallback(newDate);
+  }
+
+  void sendCallback(dynamic data) {
+    Client().pushCallbackDataToBot(widget.bot, data);
   }
 
   String formatDate(DateTime date) {

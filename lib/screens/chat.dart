@@ -211,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
             return SizedBox(height: 5);
           }
           Message message = bot.messages.reversed.elementAt(index - 1);
-          return MessageBobble(message: message);
+          return MessageBobble(message: message, bot: bot);
         },
         separatorBuilder: (BuildContext context, _) => SizedBox(height: 5.0),
       ),
