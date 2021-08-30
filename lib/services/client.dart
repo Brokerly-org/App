@@ -73,13 +73,10 @@ class Client {
 
   void onNewUpdate(BuildContext context, Map<String, dynamic> botMessages) {
     playRecvSound();
-    BotsProvider botsProvider = context.read<BotsProvider>();
     var messages = botMessages["messages"];
-    Bot bot = botsProvider.bots[botMessages["chat"]];
+    String botname = botMessages["chat"];
     messages.forEach((messageData) {
-      messageData["created_at"] = (messageData["created_at"] * 1000.0).round();
-      Message message = Message.fromDict(messageData);
-      botsProvider.addMessagesToBot(bot.botname, [message]);
+      UIManager.newMessage(context, botname, messageData);
     });
   }
 

@@ -78,6 +78,14 @@ class UIManager {
     context.read<BotsProvider>().addMessagesToBot(bot.botname, [newMessage]);
   }
 
+  static void newMessage(
+      BuildContext context, String botname, dynamic messageData) {
+    BotsProvider botsProvider = context.read<BotsProvider>();
+    messageData["created_at"] = (messageData["created_at"] * 1000.0).round();
+    Message message = Message.fromDict(messageData);
+    botsProvider.addMessagesToBot(botname, [message]);
+  }
+
   static Future<void> sendCallback(Bot bot, dynamic data) async {
     await Client().pushCallbackDataToBot(bot, data);
   }
