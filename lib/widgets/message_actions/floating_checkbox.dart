@@ -1,5 +1,4 @@
 import 'package:brokerly/models/bot.dart';
-import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
 import '../../ui_manager.dart';
