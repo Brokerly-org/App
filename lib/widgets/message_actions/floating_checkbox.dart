@@ -2,6 +2,7 @@ import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
+import '../../ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingCheckbox extends StatefulWidget {
@@ -24,7 +25,7 @@ class _FloatingCheckboxState extends State<FloatingCheckbox> {
   }
 
   void sendCallback(dynamic data) {
-    Client().pushCallbackDataToBot(widget.bot, data);
+    UIManager.sendCallback(widget.bot, data);
   }
 
   @override

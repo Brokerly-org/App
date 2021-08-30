@@ -2,6 +2,7 @@ import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
+import '../../ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingSwitch extends StatefulWidget {
@@ -24,7 +25,7 @@ class _FloatingSwitchState extends State<FloatingSwitch> {
   }
 
   void sendCallback(dynamic data) {
-    Client().pushCallbackDataToBot(widget.bot, data);
+    UIManager.sendCallback(widget.bot, data);
   }
 
   @override

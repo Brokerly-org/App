@@ -1,9 +1,6 @@
-import 'package:brokerly/providers/bots_provider.dart';
-import 'package:brokerly/services/client.dart';
-import 'package:brokerly/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import '../ui_manager.dart';
 import '../models/bot.dart';
 
 void showReportDialog(BuildContext context, Bot bot) {
@@ -41,9 +38,8 @@ TextButton report(BuildContext context, Bot bot,
         TextEditingController textEditingController) =>
     TextButton(
       onPressed: () {
-        Client().reportBot(bot, textEditingController.value.text);
         Navigator.pop(context);
-        showMessage(context, "Reporting...");
+        UIManager.reportBot(context, bot, textEditingController.value.text);
       },
       child: Text(
         "Report",
@@ -55,11 +51,11 @@ TextButton reportAndBlock(BuildContext context, Bot bot,
         TextEditingController textEditingController) =>
     TextButton(
       onPressed: () {
-        context.read<BotsProvider>().blockBot(bot.botname);
-        Client().blockBot(bot);
-        Client().reportBot(bot, textEditingController.value.text);
+        UIManager.blockBot(context, bot, showSnakBar: false);
+        UIManager.reportBot(context, bot, textEditingController.value.text,
+            showSnakBar: false);
         Navigator.pop(context);
-        showMessage(context, "Reporting And Blocking...");
+        UIManager.showMessage(context, "Reporting And Blocking...");
       },
       child: Text(
         "Report And Block",

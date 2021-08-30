@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:brokerly/services/client.dart';
 import 'package:brokerly/services/deep_links.dart';
 import 'package:brokerly/style.dart';
-import 'package:brokerly/utils.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,7 +103,7 @@ class _QRScanningPageState extends State<QRScanningPage> {
   void onScanSuccess() {
     controller.stopCamera();
     String botLink = extractBotLink(Uri.parse(result.code));
-    addBotFromUrl(context, botLink, widget.client);
+    UIManager.addBotFromUrl(context, botLink);
     Navigator.pop(context);
   }
 

@@ -1,5 +1,6 @@
 import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/services/client.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'floating_action.dart';
@@ -10,7 +11,7 @@ class FloatingButton extends StatelessWidget {
   final Bot bot;
 
   void sendCallback(dynamic data) {
-    Client().pushCallbackDataToBot(bot, data);
+    UIManager.sendCallback(bot, data);
   }
 
   @override

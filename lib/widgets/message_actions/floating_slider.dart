@@ -2,6 +2,7 @@ import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
+import '../../ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingSlider extends StatefulWidget {
@@ -23,9 +24,7 @@ class _FloatingSliderState extends State<FloatingSlider> {
   }
 
   void sendCallback(dynamic data) {
-    print("End");
-    Client()
-        .pushCallbackDataToBot(widget.bot, data)
+    UIManager.sendCallback(widget.bot, data)
         .onError((error, stackTrace) => print(error));
   }
 

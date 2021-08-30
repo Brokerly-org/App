@@ -1,19 +1,14 @@
-import 'dart:typed_data';
-
-import 'package:audioplayers/audioplayers.dart';
-import 'package:brokerly/services/cache.dart';
-import 'package:brokerly/widgets/report_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
+import '../ui_manager.dart';
+import '../widgets/report_dialog.dart';
 import '../models/bot.dart';
 import '../models/message.dart';
 import '../providers/bots_provider.dart';
 import '../services/client.dart';
-import '../utils.dart';
 import '../widgets/explain_new_bot_illustration.dart';
 import '../widgets/message_bar.dart';
 import '../widgets/message_bobble.dart';
@@ -41,23 +36,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool showScrollToBottomButton = false;
 
-  void playSendSound() async {
-    // TODO load data once and forever for that widget
-    AudioPlayer audioPlayer = AudioPlayer();
-    final ByteData data = await rootBundle.load('assets/sent.wav');
-    final Uint8List dataBytes = data.buffer.asUint8List();
-    int result = await audioPlayer.playBytes(dataBytes);
-    print('sendMessageSound result is $result');
-  }
-
-  void sendMessage(
-      BuildContext context, String message, Client client, Bot bot) async {
-    if (message.isEmpty || message == null) {
-      return;
-    }
-    client.pushMessageToBot(bot, message).then((value) => playSendSound());
-    Message newMessage = Message(message, "user", DateTime.now());
-    context.read<BotsProvider>().addMessagesToBot(bot.botname, [newMessage]);
+  void sendMessage(BuildContext context, String message, Bot bot) async {
+    UIManager.sendMessage(context, bot, message);
   }
 
   void loadRouteArguments(BuildContext context) {
@@ -131,8 +111,7 @@ class _ChatScreenState extends State<ChatScreen> {
       children: [
         Expanded(flex: 80, child: messagesListView(bot)),
         MessageBar(
-          sendMessage: (String message) =>
-              sendMessage(context, message, widget.client, bot),
+          sendMessage: (String message) => sendMessage(context, message, bot),
           controller: messageBarController,
         ),
       ],
@@ -167,23 +146,19 @@ class _ChatScreenState extends State<ChatScreen> {
           Share.share(bot.shareLink());
         } else if (selected == "delete") {
           Navigator.pop(context);
-          print("delete bot: ${await Cache.removeBot(bot)}");
-          showMessage(context, "Bot ${bot.botname} chat deleted");
-          context.read<BotsProvider>().removeBot(bot);
+          UIManager.removeBot(context, bot);
         } else if (selected == "clear") {
           context.read<BotsProvider>().clearChat(bot.botname);
         } else if (selected == "block") {
-          context.read<BotsProvider>().blockBot(bot.botname);
-          showMessage(context, "Bot blocked!");
-          widget.client.blockBot(bot);
+          UIManager.blockBot(context, bot);
         } else if (selected == "unblock") {
           context.read<BotsProvider>().unblockBot(bot.botname);
           widget.client.unblockBot(bot);
-          showMessage(context, "Bot unblocked!");
+          UIManager.showMessage(context, "Bot unblocked!");
         } else if (selected == "report") {
           showReportDialog(context, bot);
         } else {
-          showMessage(context, "<$selected> Not support yet.");
+          UIManager.showMessage(context, "<$selected> Not support yet.");
         }
       },
       itemBuilder: (BuildContext context) {

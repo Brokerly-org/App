@@ -1,6 +1,7 @@
 import 'package:brokerly/screens/qr_scanning.dart';
 import 'package:brokerly/screens/search_page.dart';
 import 'package:brokerly/screens/settings_screen.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
@@ -11,7 +12,6 @@ import '../models/bot.dart';
 import '../providers/bots_provider.dart';
 import '../services/client.dart';
 import '../services/deep_links.dart';
-import '../utils.dart';
 import '../widgets/action_button.dart';
 import '../widgets/bot_tile.dart';
 import '../widgets/expandable_fab.dart';
@@ -35,7 +35,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
 
   void addBot(BuildContext context, String longBotLink) {
     String botLink = extractBotLink(Uri.parse(longBotLink));
-    addBotFromUrl(context, botLink, widget.client);
+    UIManager.addBotFromUrl(context, botLink);
     closeNewBotInput();
   }
 
@@ -142,7 +142,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
     List<Bot> bots = botsProvider.bots.values.toList();
     return Stack(
       children: [
-        bots.length == 0 && !isDesktop(context)
+        bots.length == 0 && !UIManager.isDesktop(context)
             ? ExplainIilustration()
             : botsListView(bots),
         newBotInputBox(),

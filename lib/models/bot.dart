@@ -1,4 +1,4 @@
-import '../services/cache.dart';
+import 'package:brokerly/ui_manager.dart';
 
 import 'message.dart';
 import 'server.dart';
@@ -25,18 +25,18 @@ class Bot {
 
   void addNewMessages(int newUnreadMessages) {
     this.unreadMessages += newUnreadMessages;
-    Cache.saveBot(this);
+    UIManager.saveBot(this);
   }
 
   void readMessages() {
     this.unreadMessages = 0;
-    Cache.saveBot(this);
+    UIManager.saveBot(this);
   }
 
   void clear() {
     this.messages.clear();
     this.unreadMessages = 0;
-    Cache.saveBot(this);
+    UIManager.saveBot(this);
   }
 
   void block() {

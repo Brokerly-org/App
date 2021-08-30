@@ -1,12 +1,11 @@
 import 'dart:math' as math;
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'utils.dart';
 import 'providers/bots_provider.dart';
 import 'screens/chat.dart';
 import 'screens/chats.dart';
-import 'models/bot.dart';
 import 'services/push_notifications.dart';
 import 'services/client.dart';
 import 'services/cache.dart';
@@ -31,21 +30,6 @@ class _AppLoaderState extends State<AppLoader> {
       print("update status");
       client.updateBotsStatus(context);
       await Future.delayed(Duration(seconds: 20));
-    }
-  }
-
-  Future<void> loadBotsFromCache() async {
-    BotsProvider botsProvider = context.read<BotsProvider>();
-    List<String> botNames = await Cache.getBotNameList();
-    if (botNames == null) {
-      return;
-    }
-    print(botNames);
-    for (String botname in botNames) {
-      Bot bot = await Cache.loadBot(botname);
-      if (bot != null) {
-        botsProvider.addBot(bot);
-      }
     }
   }
 
@@ -80,12 +64,12 @@ class _AppLoaderState extends State<AppLoader> {
   }
 
   void onNewBotLink(String botLink) {
-    addBotFromUrl(context, botLink, client);
+    UIManager.addBotFromUrl(context, botLink);
     print(botLink);
   }
 
   void onInvalidBotLink(String botLink) {
-    showError(context, "Invalid bot link");
+    UIManager.showError(context, "Invalid bot link");
     print("Invalid $botLink");
   }
 
@@ -105,7 +89,7 @@ class _AppLoaderState extends State<AppLoader> {
 
   void setup() async {
     await loadOrCreateRootSecret();
-    await loadBotsFromCache();
+    await UIManager.loadBots(context);
     connectToServers(context);
     checkBotsStatus();
     initUniLinks(onNewBotLink, onInvalidBotLink);

@@ -1,8 +1,8 @@
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../utils.dart';
 import '../style.dart';
 import '../models/bot.dart';
 import '../providers/bots_provider.dart';
@@ -32,7 +32,7 @@ class BotTile extends StatelessWidget {
       child: ListTile(
         onTap: () {
           context.read<BotsProvider>().readBotMessages(bot.botname);
-          if (!isDesktop(context)) {
+          if (!UIManager.isDesktop(context)) {
             Navigator.pushNamed(context, '/chat',
                 arguments: ChatScreenArguments(bot.botname, client));
           } else {

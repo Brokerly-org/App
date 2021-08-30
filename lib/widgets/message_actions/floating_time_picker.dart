@@ -2,6 +2,7 @@ import 'package:brokerly/models/bot.dart';
 import 'package:brokerly/services/client.dart';
 import 'package:flutter/material.dart';
 
+import '../../ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingTimePicker extends StatefulWidget {
@@ -32,7 +33,7 @@ class _FloatingTimePickerState extends State<FloatingTimePicker> {
   }
 
   void sendCallback(dynamic data) {
-    Client().pushCallbackDataToBot(widget.bot, data);
+    UIManager.sendCallback(widget.bot, data);
   }
 
   String formatTime(TimeOfDay time) {

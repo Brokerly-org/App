@@ -15,6 +15,7 @@ import '../providers/bots_provider.dart';
 import '../models/message.dart';
 import '../models/server.dart';
 import '../models/bot.dart';
+import '../ui_manager.dart';
 
 class Client {
   static Map<String, IOWebSocketChannel> connections = {};
@@ -186,7 +187,6 @@ class Client {
   }
 
   void updateServerBotsStatus(BuildContext context, Server server) async {
-    BotsProvider botsProvider = context.read<BotsProvider>();
     String path = "/user/bots_status";
     Map<String, String> params = {"token": server.userToken};
     Uri uri = this.uriFromServer(server, path, params);
@@ -196,7 +196,7 @@ class Client {
     statusUpdate.forEach((botStatus) {
       String botname = botStatus["botname"];
       bool status = botStatus["online_status"];
-      botsProvider.updateBotOnlineStatus(botname, status);
+      UIManager.updateStatus(context, botname, status);
     });
   }
 
