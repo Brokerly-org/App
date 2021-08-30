@@ -27,6 +27,12 @@ class Client {
         .forEach((server) => this.connectToServer(context, server));
   }
 
+  void reconnect(BuildContext context, Server server) {
+    Future.delayed(Duration(seconds: 30)).then(
+      (value) => connectToServer(context, server),
+    );
+  }
+
   void connectToServer(BuildContext context, Server server) {
     String serverUrl =
         (server.urlSchema == "https" ? "wss://" : "ws://") + server.url;
@@ -37,15 +43,21 @@ class Client {
     }
     String wsUrl = serverUrl + path + "?" + "token=${server.userToken}";
     print("Connect to $wsUrl");
-    final IOWebSocketChannel webSocket =
-        IOWebSocketChannel.connect(Uri.parse(wsUrl));
+    final IOWebSocketChannel webSocket = IOWebSocketChannel.connect(
+      Uri.parse(wsUrl),
+      pingInterval: Duration(seconds: 30),
+    );
     connections[serverUrl] = webSocket;
-    webSocket.stream.listen((message) {
-      List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
-      messages.forEach((botMessages) {
-        this.onNewUpdate(context, botMessages);
-      });
-    });
+    webSocket.stream.listen(
+      (message) {
+        List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
+        messages.forEach((botMessages) {
+          this.onNewUpdate(context, botMessages);
+        });
+      },
+      onDone: () => reconnect(context, server),
+      cancelOnError: false,
+    );
   }
 
   void onNewUpdate(BuildContext context, Map<String, dynamic> botMessages) {

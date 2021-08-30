@@ -26,9 +26,7 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20),
                     Row(
                       children: [
                         Padding(
