@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:brokerly/services/cache.dart';
+import 'package:brokerly/widgets/report_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -179,6 +180,8 @@ class _ChatScreenState extends State<ChatScreen> {
           context.read<BotsProvider>().unblockBot(bot.botname);
           widget.client.unblockBot(bot);
           showMessage(context, "Bot unblocked!");
+        } else if (selected == "report") {
+          showReportDialog(context, bot);
         } else {
           showMessage(context, "<$selected> Not support yet.");
         }

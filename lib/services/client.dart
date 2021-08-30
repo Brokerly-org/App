@@ -33,6 +33,16 @@ class Client {
     );
   }
 
+  Uri uriFromServer(Server server, String path, Map<String, String> params) {
+    Uri uri;
+    if (server.urlSchema == "http") {
+      uri = Uri.http(server.url, path, params);
+    } else {
+      uri = Uri.https(server.url, path, params);
+    }
+    return uri;
+  }
+
   void connectToServer(BuildContext context, Server server) {
     String serverUrl =
         (server.urlSchema == "https" ? "wss://" : "ws://") + server.url;
@@ -74,40 +84,25 @@ class Client {
 
   Future<void> pushMessageToBot(Bot bot, String message) async {
     Server server = bot.server;
-
     Map<String, String> params = {
       "token": server.userToken,
       "message": message,
       "botname": bot.botname,
     };
     String path = '/user/push';
-
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
-
+    Uri uri = this.uriFromServer(server, path, params);
     await http.post(uri);
   }
 
   Future<void> pushCallbackDataToBot(Bot bot, dynamic callback) async {
     Server server = bot.server;
-
     Map<String, String> params = {
       "token": server.userToken,
       "callback_data": callback.toString(),
       "botname": bot.botname,
     };
     String path = '/user/callback';
-
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
+    Uri uri = this.uriFromServer(server, path, params);
 
     var response = await http.post(uri).timeout(Duration(seconds: 20));
     if (response.statusCode != 200) {
@@ -117,38 +112,36 @@ class Client {
 
   Future<void> blockBot(Bot bot) async {
     Server server = bot.server;
-
     Map<String, String> params = {
       "token": server.userToken,
       "botname": bot.botname,
     };
     String path = '/user/block_bot';
+    Uri uri = this.uriFromServer(server, path, params);
 
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
+    await http.post(uri);
+  }
+
+  Future<void> reportBot(Bot bot, String explain) async {
+    Server server = bot.server;
+    Map<String, String> params = {
+      "token": server.userToken,
+      "botname": bot.botname,
+    };
+    String path = '/user/report_bot';
+    Uri uri = this.uriFromServer(server, path, params);
 
     await http.post(uri);
   }
 
   Future<void> unblockBot(Bot bot) async {
     Server server = bot.server;
-
     Map<String, String> params = {
       "token": server.userToken,
       "botname": bot.botname,
     };
     String path = '/user/unblock_bot';
-
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
+    Uri uri = this.uriFromServer(server, path, params);
 
     await http.post(uri);
   }
@@ -165,13 +158,8 @@ class Client {
   Future<int> hasUpdates(Server server) async {
     Map<String, String> params = {"token": server.userToken};
     String path = '/user/has_updates';
+    Uri uri = this.uriFromServer(server, path, params);
 
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
     var response = await http.get(uri);
     return int.parse(response.body);
   }
@@ -199,15 +187,9 @@ class Client {
 
   void updateServerBotsStatus(BuildContext context, Server server) async {
     BotsProvider botsProvider = context.read<BotsProvider>();
-
-    Uri uri;
     String path = "/user/bots_status";
     Map<String, String> params = {"token": server.userToken};
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
+    Uri uri = this.uriFromServer(server, path, params);
 
     var response = await http.get(uri);
     List<dynamic> statusUpdate = json.decode(response.body);
@@ -227,12 +209,7 @@ class Client {
   Future<Bot> fetchBot(String botname, Server server) async {
     Map<String, String> params = {"botname": botname};
     String path = "/user/bot_info";
-    Uri uri;
-    if (server.urlSchema == "http") {
-      uri = Uri.http(server.url, path, params);
-    } else {
-      uri = Uri.https(server.url, path, params);
-    }
+    Uri uri = this.uriFromServer(server, path, params);
     var response = await http.get(uri);
     if (response.statusCode != 200) {
       return null;
