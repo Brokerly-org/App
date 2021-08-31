@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+int r = 77;
+int g = 77;
+int b = 77;
+
 Map<int, Color> color = {
-  50: Color.fromRGBO(77, 77, 77, .1),
-  100: Color.fromRGBO(77, 77, 77, .2),
-  200: Color.fromRGBO(77, 77, 77, .3),
-  300: Color.fromRGBO(77, 77, 77, .4),
-  400: Color.fromRGBO(77, 77, 77, .5),
-  500: Color.fromRGBO(77, 77, 77, .6),
-  600: Color.fromRGBO(77, 77, 77, .7),
-  700: Color.fromRGBO(77, 77, 77, .8),
-  800: Color.fromRGBO(77, 77, 77, .9),
-  900: Color.fromRGBO(77, 77, 77, 1),
+  50: Color.fromRGBO(r, g, b, .1),
+  100: Color.fromRGBO(r, g, b, .2),
+  200: Color.fromRGBO(r, g, b, .3),
+  300: Color.fromRGBO(r, g, b, .4),
+  400: Color.fromRGBO(r, g, b, .5),
+  500: Color.fromRGBO(r, g, b, .6),
+  600: Color.fromRGBO(r, g, b, .7),
+  700: Color.fromRGBO(r, g, b, .8),
+  800: Color.fromRGBO(r, g, b, .9),
+  900: Color.fromRGBO(r, g, b, 1),
 };
 
 MaterialColor primery = MaterialColor(0xFF4D4D4D, color);

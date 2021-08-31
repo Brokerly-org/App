@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:web_socket_channel/io.dart';
+import 'package:flutter/foundation.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:crypto/crypto.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,13 +13,12 @@ import 'package:provider/provider.dart';
 
 import 'cache.dart';
 import '../providers/bots_provider.dart';
-import '../models/message.dart';
 import '../models/server.dart';
 import '../models/bot.dart';
 import '../ui_manager.dart';
 
 class Client {
-  static Map<String, IOWebSocketChannel> connections = {};
+  static Map<String, WebSocketChannel> connections = {};
 
   void connectToServers(BuildContext context) {
     context
@@ -54,16 +54,15 @@ class Client {
     }
     String wsUrl = serverUrl + path + "?" + "token=${server.userToken}";
     print("Connect to $wsUrl");
-    final IOWebSocketChannel webSocket = IOWebSocketChannel.connect(
+    final WebSocketChannel webSocket = WebSocketChannel.connect(
       Uri.parse(wsUrl),
-      pingInterval: Duration(seconds: 30),
     );
     connections[serverUrl] = webSocket;
     webSocket.stream.listen(
       (message) {
         List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
         messages.forEach((botMessages) {
-          this.onNewUpdate(context, botMessages);
+          this.onNewUpdate(context, botMessages, server);
         });
       },
       onDone: () => reconnect(context, server),
@@ -71,12 +70,13 @@ class Client {
     );
   }
 
-  void onNewUpdate(BuildContext context, Map<String, dynamic> botMessages) {
+  void onNewUpdate(
+      BuildContext context, Map<String, dynamic> botMessages, Server server) {
     playRecvSound();
     var messages = botMessages["messages"];
     String botname = botMessages["chat"];
     messages.forEach((messageData) {
-      UIManager.newMessage(context, botname, messageData);
+      UIManager.newMessage(context, server.url + "!" + botname, messageData);
     });
   }
 
@@ -146,6 +146,9 @@ class Client {
 
   void playRecvSound() async {
     // TODO load data once and forever for that widget
+    if (kIsWeb) {
+      return;
+    }
     AudioPlayer audioPlayer = AudioPlayer();
     final ByteData data = await rootBundle.load('assets/received.wav');
     final Uint8List dataBytes = data.buffer.asUint8List();
@@ -193,7 +196,7 @@ class Client {
     statusUpdate.forEach((botStatus) {
       String botname = botStatus["botname"];
       bool status = botStatus["online_status"];
-      UIManager.updateStatus(context, botname, status);
+      UIManager.updateStatus(context, server.url + "!" + botname, status);
     });
   }
 

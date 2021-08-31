@@ -1,4 +1,6 @@
-import 'package:emoji_picker/emoji_picker.dart';
+import 'package:brokerly/const.dart';
+import 'package:emoji_picker/emoji_picker.dart' as emoji;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -99,14 +101,14 @@ class _MessageBarState extends State<MessageBar> {
     );
   }
 
-  EmojiPicker emojiKeyboard(BuildContext context) {
-    return EmojiPicker(
+  emoji.EmojiPicker emojiKeyboard(BuildContext context) {
+    return emoji.EmojiPicker(
       bgColor: Theme.of(context).backgroundColor,
       rows: 3,
       columns: 8,
       numRecommended: 10,
-      buttonMode: ButtonMode.CUPERTINO,
-      onEmojiSelected: (Emoji e, Category c) {
+      buttonMode: emoji.ButtonMode.CUPERTINO,
+      onEmojiSelected: (emoji.Emoji e, emoji.Category c) {
         textEditingController.text += e.emoji;
       },
     );
@@ -118,6 +120,7 @@ class _MessageBarState extends State<MessageBar> {
         onFieldSubmitted: (String message) => sendMessage(),
         controller: textEditingController,
         focusNode: focusNode,
+        autofocus: MediaQuery.of(context).size.width > kDesktopMinSize,
         cursorColor: Colors.white,
         style: TextStyle(fontSize: 20),
         decoration: InputDecoration(

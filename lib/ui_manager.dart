@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,23 @@ import 'services/client.dart';
 import 'services/cache.dart';
 
 class UIManager {
-  static void addBotFromUrl(BuildContext context, String url) async {
+  static void _playSendSound() async {
+    if (kIsWeb) {
+      return;
+    }
+    // TODO load data once and forever for that widget
+    AudioPlayer audioPlayer = AudioPlayer();
+    final ByteData data = await rootBundle.load('assets/sent.wav');
+    final Uint8List dataBytes = data.buffer.asUint8List();
+    int result = await audioPlayer.playBytes(dataBytes);
+    print('sendMessageSound result is $result');
+  }
+
+  static Bot getBot(BuildContext context, String botId) {
+    return context.read<BotsProvider>().bots[botId];
+  }
+
+  static Future<void> addBotFromUrl(BuildContext context, String url) async {
     BotsProvider botsProvider = context.read<BotsProvider>();
     if (url == "") {
       return;
@@ -55,6 +72,7 @@ class UIManager {
     Cache.saveBot(newBot);
     botsProvider.addBot(newBot);
     Client().connectToServer(context, server);
+    sendMessage(context, newBot, "hi");
   }
 
   static void removeBot(BuildContext context, Bot bot) {
@@ -66,24 +84,17 @@ class UIManager {
     if (message.isEmpty || message == null) {
       return;
     }
-    Client().pushMessageToBot(bot, message).then((value) async {
-      // TODO load data once and forever for that widget
-      AudioPlayer audioPlayer = AudioPlayer();
-      final ByteData data = await rootBundle.load('assets/sent.wav');
-      final Uint8List dataBytes = data.buffer.asUint8List();
-      int result = await audioPlayer.playBytes(dataBytes);
-      print('sendMessageSound result is $result');
-    });
+    Client().pushMessageToBot(bot, message).then((value) => _playSendSound());
     Message newMessage = Message(message, "user", DateTime.now());
-    context.read<BotsProvider>().addMessagesToBot(bot.botname, [newMessage]);
+    context.read<BotsProvider>().addMessagesToBot(bot.id, [newMessage]);
   }
 
   static void newMessage(
-      BuildContext context, String botname, dynamic messageData) {
+      BuildContext context, String botId, dynamic messageData) {
     BotsProvider botsProvider = context.read<BotsProvider>();
     messageData["created_at"] = (messageData["created_at"] * 1000.0).round();
     Message message = Message.fromDict(messageData);
-    botsProvider.addMessagesToBot(botname, [message]);
+    botsProvider.addMessagesToBot(botId, [message]);
   }
 
   static Future<void> sendCallback(Bot bot, dynamic data) async {
@@ -92,11 +103,20 @@ class UIManager {
 
   static void blockBot(BuildContext context, Bot bot,
       {bool showSnakBar = true}) {
-    context.read<BotsProvider>().blockBot(bot.botname);
+    context.read<BotsProvider>().blockBot(bot.id);
     if (showSnakBar) {
       showMessage(context, "Bot blocked!");
     }
     Client().blockBot(bot);
+  }
+
+  static void unblockBot(BuildContext context, Bot bot,
+      {bool showSnakBar = true}) {
+    context.read<BotsProvider>().unblockBot(bot.id);
+    if (showSnakBar) {
+      showMessage(context, "Bot unblocked!");
+    }
+    Client().unblockBot(bot);
   }
 
   static void reportBot(BuildContext context, Bot bot, String reportMessage,
@@ -107,9 +127,9 @@ class UIManager {
     }
   }
 
-  static void updateStatus(BuildContext context, String botname, bool status) {
+  static void updateStatus(BuildContext context, String botId, bool status) {
     BotsProvider botsProvider = context.read<BotsProvider>();
-    botsProvider.updateBotOnlineStatus(botname, status);
+    botsProvider.updateBotOnlineStatus(botId, status);
   }
 
   static Future<void> loadBots(BuildContext context) async {

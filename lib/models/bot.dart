@@ -19,6 +19,10 @@ class Bot {
     return "https://brokerly.tk/bot/${server.urlSchema == 'https' ? 'secure' : 'notsecure'}/${this.botname}?url=${this.server.url}";
   }
 
+  String get id {
+    return this.server.url + "!" + this.botname;
+  }
+
   void updateOnlineStatus(bool status) {
     this.onlineStatus = status;
   }

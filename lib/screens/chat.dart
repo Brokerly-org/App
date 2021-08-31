@@ -15,15 +15,15 @@ import '../widgets/message_bobble.dart';
 import '../widgets/popup_menu_option.dart';
 
 class ChatScreenArguments {
-  String botname;
+  String botId;
   Client client;
-  ChatScreenArguments(this.botname, this.client);
+  ChatScreenArguments(this.botId, this.client);
 }
 
 class ChatScreen extends StatefulWidget {
-  String botname;
+  String botId;
   Client client;
-  ChatScreen({this.botname, this.client});
+  ChatScreen({this.botId, this.client});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -41,10 +41,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void loadRouteArguments(BuildContext context) {
-    if (this.widget.botname == null) {
+    if (this.widget.botId == null) {
       ChatScreenArguments args =
           ModalRoute.of(context).settings.arguments as ChatScreenArguments;
-      widget.botname = args.botname;
+      widget.botId = args.botId;
       widget.client = args.client;
     }
   }
@@ -68,9 +68,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     loadRouteArguments(context);
     BotsProvider botsProvider = context.watch<BotsProvider>();
-    Bot bot = botsProvider.bots[widget.botname];
+    Bot bot = botsProvider.bots[widget.botId];
 
-    if (!botsProvider.bots.containsKey(widget.botname)) {
+    if (!botsProvider.bots.containsKey(widget.botId)) {
       return emptyChat(context);
     }
     bot.readMessages();
@@ -110,11 +110,32 @@ class _ChatScreenState extends State<ChatScreen> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Expanded(flex: 80, child: messagesListView(bot)),
-        MessageBar(
-          sendMessage: (String message) => sendMessage(context, message, bot),
-          controller: messageBarController,
-        ),
+        bot.blocked
+            ? unblockBar(context, bot)
+            : MessageBar(
+                sendMessage: (String message) =>
+                    sendMessage(context, message, bot),
+                controller: messageBarController,
+              ),
       ],
+    );
+  }
+
+  InkWell unblockBar(BuildContext context, Bot bot) {
+    return InkWell(
+      onTap: () {
+        UIManager.unblockBot(context, bot, showSnakBar: false);
+      },
+      child: Container(
+        width: double.infinity,
+        height: 45,
+        color: Theme.of(context).primaryColor,
+        alignment: Alignment.center,
+        child: Text(
+          "unblock",
+          style: TextStyle(color: Colors.amber, fontSize: 22),
+        ),
+      ),
     );
   }
 
@@ -148,11 +169,11 @@ class _ChatScreenState extends State<ChatScreen> {
           Navigator.pop(context);
           UIManager.removeBot(context, bot);
         } else if (selected == "clear") {
-          context.read<BotsProvider>().clearChat(bot.botname);
+          context.read<BotsProvider>().clearChat(bot.id);
         } else if (selected == "block") {
           UIManager.blockBot(context, bot);
         } else if (selected == "unblock") {
-          context.read<BotsProvider>().unblockBot(bot.botname);
+          context.read<BotsProvider>().unblockBot(bot.id);
           widget.client.unblockBot(bot);
           UIManager.showMessage(context, "Bot unblocked!");
         } else if (selected == "report") {

@@ -27,7 +27,7 @@ class Cache {
   static Future<bool> saveBot(Bot bot) async {
     SharedPreferences disk = await SharedPreferences.getInstance();
     String botJson = json.encode(bot.toDict());
-    String botKey = bot.server.url + ':' + bot.botname;
+    String botKey = bot.id;
     bool saved = await disk.setString(botKey, botJson);
     if (saved) {
       return await addBotNameToList(botKey);
@@ -48,7 +48,7 @@ class Cache {
   static Future<bool> removeBot(Bot bot) async {
     SharedPreferences disk = await SharedPreferences.getInstance();
     List<String> botNames = disk.getStringList("botlist") ?? [];
-    String botKey = bot.server.url + ':' + bot.botname;
+    String botKey = bot.id;
     if (botNames.contains(botKey)) {
       botNames.remove(botKey);
       return await disk.setStringList("botlist", botNames);

@@ -3,6 +3,7 @@ import 'package:brokerly/services/cache.dart';
 import 'package:brokerly/services/client.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 const checkUpdatesTask = "check_updates_task";
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -91,6 +92,9 @@ void callbackDispatcher() {
 }
 
 void initWorkManager() {
+  if (kIsWeb) {
+    return;
+  }
   Workmanager().initialize(
     callbackDispatcher,
     //isInDebugMode: true,
@@ -98,6 +102,9 @@ void initWorkManager() {
 }
 
 void registerPullUpdatesTask() {
+  if (kIsWeb) {
+    return;
+  }
   Workmanager().cancelAll().then((v) {
     // Workmanager().registerOneOffTask(
     //   "5",

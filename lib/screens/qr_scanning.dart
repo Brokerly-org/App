@@ -100,10 +100,10 @@ class _QRScanningPageState extends State<QRScanningPage> {
     });
   }
 
-  void onScanSuccess() {
+  void onScanSuccess() async {
     controller.stopCamera();
     String botLink = extractBotLink(Uri.parse(result.code));
-    UIManager.addBotFromUrl(context, botLink);
+    await UIManager.addBotFromUrl(context, botLink);
     Navigator.pop(context);
   }
 

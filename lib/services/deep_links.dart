@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:brokerly/main.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 String extractBotLink(Uri uri) {
   bool secure =
@@ -39,6 +41,10 @@ void handleUri(
 
 Future<void> initUniLinks(
     Function(String) onNewBot, Function(String) onInvalidLink) async {
+  if (kIsWeb) {
+    handleUri(webUri, onNewBot, onInvalidLink);
+    return;
+  }
   linkStream.listen((String link) {
     Uri uri = Uri.parse(link);
     handleUri(uri, onNewBot, onInvalidLink);

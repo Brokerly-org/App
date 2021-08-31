@@ -36,7 +36,7 @@ class _AppLoaderState extends State<AppLoader> {
   @override
   Widget build(BuildContext context) {
     BotsProvider botsProvider = context.watch<BotsProvider>();
-    String selectedBotName = botsProvider.selectedBotName ?? "";
+    String selectedBotID = botsProvider.selectedBotID ?? "";
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constrains) {
@@ -53,7 +53,7 @@ class _AppLoaderState extends State<AppLoader> {
                     width: 1),
                 Expanded(
                   flex: 13,
-                  child: ChatScreen(botname: selectedBotName, client: client),
+                  child: ChatScreen(botId: selectedBotID, client: client),
                 ),
               ],
             ),

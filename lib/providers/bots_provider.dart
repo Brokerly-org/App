@@ -8,16 +8,15 @@ class BotsProvider extends ChangeNotifier {
   Map<String, Bot> bots = {};
   Map<String, int> serverBotsCount = {};
   Map<String, Server> servers = {};
-  String selectedBotName;
+  String selectedBotID;
 
-  void selectBotName(String botname) {
-    this.selectedBotName = botname;
+  void selectBotID(String botId) {
+    this.selectedBotID = botId;
     notifyListeners();
   }
 
   void addBot(Bot bot) {
-    // todo: bot name is uniqu
-    bots[bot.botname] = bot;
+    bots[bot.id] = bot;
     if (!servers.containsKey(bot.server.url)) {
       servers[bot.server.url] = bot.server;
       serverBotsCount[bot.server.url] = 1;
@@ -28,7 +27,7 @@ class BotsProvider extends ChangeNotifier {
   }
 
   void removeBot(Bot bot) {
-    this.bots.remove(bot.botname);
+    this.bots.remove(bot.id);
     this.serverBotsCount[bot.server.url] -= 1;
     if (this.serverBotsCount[bot.server.url] <= 0) {
       this.servers.remove(bot.server.url);
@@ -36,8 +35,8 @@ class BotsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addMessagesToBot(String botname, List<Message> messages) {
-    Bot bot = this.bots[botname];
+  void addMessagesToBot(String botId, List<Message> messages) {
+    Bot bot = this.bots[botId];
     if (bot.blocked) {
       return;
     }
@@ -46,33 +45,33 @@ class BotsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void blockBot(String botname) {
-    Bot bot = this.bots[botname];
+  void blockBot(String botId) {
+    Bot bot = this.bots[botId];
     bot.block();
     notifyListeners();
   }
 
-  void unblockBot(String botname) {
-    Bot bot = this.bots[botname];
+  void unblockBot(String botId) {
+    Bot bot = this.bots[botId];
     bot.unblock();
     notifyListeners();
   }
 
-  void readBotMessages(String botname) {
-    if (this.bots[botname].unreadMessages == 0) {
+  void readBotMessages(String botId) {
+    if (this.bots[botId].unreadMessages == 0) {
       return;
     }
-    this.bots[botname].readMessages();
+    this.bots[botId].readMessages();
     notifyListeners();
   }
 
-  void clearChat(String botname) {
-    this.bots[botname].clear();
+  void clearChat(String botId) {
+    this.bots[botId].clear();
     notifyListeners();
   }
 
-  void updateBotOnlineStatus(String botname, bool status) {
-    this.bots[botname].updateOnlineStatus(status);
+  void updateBotOnlineStatus(String botId, bool status) {
+    this.bots[botId].updateOnlineStatus(status);
     notifyListeners();
   }
 }

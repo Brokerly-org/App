@@ -31,12 +31,12 @@ class BotTile extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () {
-          context.read<BotsProvider>().readBotMessages(bot.botname);
+          context.read<BotsProvider>().readBotMessages(bot.id);
           if (!UIManager.isDesktop(context)) {
             Navigator.pushNamed(context, '/chat',
-                arguments: ChatScreenArguments(bot.botname, client));
+                arguments: ChatScreenArguments(bot.id, client));
           } else {
-            context.read<BotsProvider>().selectBotName(bot.botname);
+            context.read<BotsProvider>().selectBotID(bot.id);
           }
         },
         tileColor: Theme.of(context).primaryColor,
