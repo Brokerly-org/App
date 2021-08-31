@@ -69,6 +69,9 @@ class MessageBobble extends StatelessWidget {
     List<Widget> messageWidgets = [
       SizedBox(height: 4.0),
     ];
+    if (message.messageWidget == null) {
+      return [];
+    }
     switch (message.messageWidget.type) {
       case "button":
         {
