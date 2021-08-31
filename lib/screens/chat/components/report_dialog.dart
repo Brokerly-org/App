@@ -1,7 +1,6 @@
+import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
-
-import '../ui_manager.dart';
-import '../models/bot.dart';
 
 void showReportDialog(BuildContext context, Bot bot) {
   final TextEditingController textEditingController = TextEditingController();

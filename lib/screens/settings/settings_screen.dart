@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'notifications_settings.dart';
-import '../services/common_functions.dart';
-import '../widgets/circle_button.dart';
-import '../widgets/settings_item.dart';
+import '../notifications_settings/notifications_settings.dart';
+import '../../services/common_functions.dart';
+import '../../widgets/circle_button.dart';
+import 'components/settings_item.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override

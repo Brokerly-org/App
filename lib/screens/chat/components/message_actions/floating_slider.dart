@@ -1,7 +1,7 @@
 import 'package:brokerly/models/bot.dart';
 import 'package:flutter/material.dart';
 
-import '../../ui_manager.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingSlider extends StatefulWidget {

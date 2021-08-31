@@ -1,6 +1,6 @@
 import 'package:brokerly/style.dart';
 import 'package:brokerly/widgets/circle_button.dart';
-import 'package:brokerly/widgets/notification_item.dart';
+import 'package:brokerly/screens/notifications_settings/components/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

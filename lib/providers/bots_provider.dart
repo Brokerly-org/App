@@ -71,7 +71,11 @@ class BotsProvider extends ChangeNotifier {
   }
 
   void updateBotOnlineStatus(String botId, bool status) {
-    this.bots[botId].updateOnlineStatus(status);
+    Bot bot = this.bots[botId];
+    if (bot == null) {
+      return;
+    }
+    bot.updateOnlineStatus(status);
     notifyListeners();
   }
 }

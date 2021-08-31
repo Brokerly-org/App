@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/bots_provider.dart';
-import 'screens/chat.dart';
-import 'screens/chats.dart';
+import 'screens/chat/chat.dart';
+import 'screens/chats/chats.dart';
 import 'services/push_notifications.dart';
 import 'services/client.dart';
 import 'services/cache.dart';

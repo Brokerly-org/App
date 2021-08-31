@@ -1,22 +1,22 @@
-import 'package:brokerly/screens/qr_scanning.dart';
-import 'package:brokerly/screens/search_page.dart';
-import 'package:brokerly/screens/settings_screen.dart';
+import 'package:brokerly/screens/qr_scanner/qr_scanning.dart';
+import 'package:brokerly/screens/search/search_page.dart';
+import 'package:brokerly/screens/settings/settings_screen.dart';
 import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import '../const.dart';
-import '../models/bot.dart';
-import '../providers/bots_provider.dart';
-import '../services/client.dart';
-import '../services/deep_links.dart';
-import '../widgets/action_button.dart';
-import '../widgets/bot_tile.dart';
-import '../widgets/expandable_fab.dart';
-import '../widgets/explain_new_bot_illustration.dart';
-import '../widgets/new_bot_input.dart';
+import '../../const.dart';
+import '../../models/bot.dart';
+import '../../providers/bots_provider.dart';
+import '../../services/client.dart';
+import '../../services/deep_links.dart';
+import 'components/action_button.dart';
+import 'components/bot_tile.dart';
+import '../../widgets/explain_new_bot_illustration.dart';
+import 'components/expandable_fab.dart';
+import 'components/new_bot_input.dart';
 
 class ChatsListScreen extends StatefulWidget {
   ChatsListScreen(this.client);

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../style.dart';
-import '../models/bot.dart';
-import '../providers/bots_provider.dart';
-import '../services/client.dart';
-import '../screens/chat.dart';
+import '../../../style.dart';
+import '../../../models/bot.dart';
+import '../../../providers/bots_provider.dart';
+import '../../../services/client.dart';
+import '../../chat/chat.dart';
 
 class BotTile extends StatelessWidget {
   const BotTile({

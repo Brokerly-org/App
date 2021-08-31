@@ -1,8 +1,8 @@
 import 'package:brokerly/models/bot.dart';
+import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../ui_manager.dart';
 import 'floating_action.dart';
 
 class FloatingDatePicker extends StatefulWidget {

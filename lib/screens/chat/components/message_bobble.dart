@@ -1,13 +1,8 @@
 import 'package:brokerly/models/bot.dart';
-import 'package:brokerly/widgets/message_actions/floating_checkbox.dart';
-import 'package:brokerly/widgets/message_actions/floating_slider.dart';
-import 'package:brokerly/widgets/message_actions/floating_switch.dart';
-import 'package:brokerly/widgets/message_actions/floating_time_picker.dart';
+import 'package:brokerly/models/message.dart';
 import 'package:flutter/material.dart';
 
-import '../models/message.dart';
-import 'message_actions/floating_button.dart';
-import 'message_actions/floating_date_picker.dart';
+import 'message_widget.dart';
 
 class MessageBobble extends StatelessWidget {
   const MessageBobble({Key key, @required this.message, @required this.bot})
@@ -52,69 +47,18 @@ class MessageBobble extends StatelessWidget {
   }
 
   List<Widget> messageWidgets(BuildContext context) {
-    // List<Widget> messageWidgets = [
-    //   SizedBox(height: 4.0),
-    //   FloatingButton(args: {"text": "Open"}),
-    //   FloatingSlider(
-    //       args: {"initial": 0.0, "min": 0.0, "max": 100.0, "divisions": 5}),
-    //   FloatingCheckbox(args: {"initial": false}),
-    //   FloatingSwitch(args: {"initial": false}),
-    //   FloatingDatePicker(args: {
-    //     "initial": DateTime.now(),
-    //     "first": DateTime(2021, 1, 1, 1),
-    //     "last": DateTime(2022, 1, 1, 1)
-    //   }),
-    //   FloatingTimePicker(args: {"initial": TimeOfDay.now()})
-    // ];
     List<Widget> messageWidgets = [
       SizedBox(height: 4.0),
     ];
     if (message.messageWidget == null) {
       return [];
     }
-    switch (message.messageWidget.type) {
-      case "button":
-        {
-          messageWidgets
-              .add(FloatingButton(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-      case "slider":
-        {
-          messageWidgets
-              .add(FloatingSlider(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-      case "checkbox":
-        {
-          messageWidgets.add(
-              FloatingCheckbox(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-      case "date_picker":
-        {
-          messageWidgets.add(
-              FloatingDatePicker(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-      case "switch":
-        {
-          messageWidgets
-              .add(FloatingSwitch(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-      case "time_picker":
-        {
-          messageWidgets.add(
-              FloatingTimePicker(args: message.messageWidget.args, bot: bot));
-        }
-        break;
-    }
-    if (messageWidgets.length <= 1) {
+    var messageWidget = MessageWidget(message: message, bot: bot);
+    if (messageWidget.runtimeType == Container) {
       return [];
-    } else {
-      messageWidgets.add(SizedBox(height: 5.0));
     }
+    messageWidgets.add(messageWidget);
+    messageWidgets.add(SizedBox(height: 5.0));
     return messageWidgets;
   }
 

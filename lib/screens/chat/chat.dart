@@ -3,16 +3,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
-import '../ui_manager.dart';
-import '../widgets/report_dialog.dart';
-import '../models/bot.dart';
-import '../models/message.dart';
-import '../providers/bots_provider.dart';
-import '../services/client.dart';
-import '../widgets/explain_new_bot_illustration.dart';
-import '../widgets/message_bar.dart';
-import '../widgets/message_bobble.dart';
-import '../widgets/popup_menu_option.dart';
+import '../../ui_manager.dart';
+import '../../models/bot.dart';
+import '../../models/message.dart';
+import '../../providers/bots_provider.dart';
+import '../../services/client.dart';
+import '../../widgets/explain_new_bot_illustration.dart';
+import 'components/popup_menu_option.dart';
+import 'components/message_bar.dart';
+import 'components/message_bobble.dart';
+import 'components/report_dialog.dart';
 
 class ChatScreenArguments {
   String botId;
@@ -35,10 +35,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final MessageBarController messageBarController = MessageBarController();
 
   bool showScrollToBottomButton = false;
-
-  void sendMessage(BuildContext context, String message, Bot bot) async {
-    UIManager.sendMessage(context, bot, message);
-  }
 
   void loadRouteArguments(BuildContext context) {
     if (this.widget.botId == null) {
@@ -75,14 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     bot.readMessages();
     return Scaffold(
-      appBar: AppBar(
-          title: Row(
-            children: [
-              Text(bot.title),
-              if (bot.blocked) Text(" (Blocked)"),
-            ],
-          ),
-          actions: [chatActions(context, bot)]),
+      appBar: buildAppBar(bot, context),
       backgroundColor: Theme.of(context).backgroundColor,
       body: body(bot, context),
       floatingActionButton: fab(context),
@@ -114,10 +103,34 @@ class _ChatScreenState extends State<ChatScreen> {
             ? unblockBar(context, bot)
             : MessageBar(
                 sendMessage: (String message) =>
-                    sendMessage(context, message, bot),
+                    UIManager.sendMessage(context, bot, message),
                 controller: messageBarController,
               ),
       ],
+    );
+  }
+
+  Widget messagesListView(Bot bot) {
+    int itemCount = bot.messages.length + 2;
+    return GestureDetector(
+      onTap: () {
+        if (messageBarController.unfocus != null) {
+          messageBarController.unfocus();
+        }
+      },
+      child: ListView.separated(
+        controller: scrollController,
+        itemCount: itemCount,
+        reverse: true,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == 0 || index == itemCount - 1) {
+            return SizedBox(height: 5);
+          }
+          Message message = bot.messages.reversed.elementAt(index - 1);
+          return MessageBobble(message: message, bot: bot);
+        },
+        separatorBuilder: (BuildContext context, _) => SizedBox(height: 5.0),
+      ),
     );
   }
 
@@ -158,6 +171,17 @@ class _ChatScreenState extends State<ChatScreen> {
         style: Theme.of(context).textTheme.headline4,
       ),
     );
+  }
+
+  AppBar buildAppBar(Bot bot, BuildContext context) {
+    return AppBar(
+        title: Row(
+          children: [
+            Text(bot.title),
+            if (bot.blocked) Text(" (Blocked)"),
+          ],
+        ),
+        actions: [chatActions(context, bot)]);
   }
 
   PopupMenuButton<String> chatActions(BuildContext context, Bot bot) {
@@ -207,30 +231,6 @@ class _ChatScreenState extends State<ChatScreen> {
               AppLocalizations.of(context).deleteChat, Icons.delete_outlined),
         ];
       },
-    );
-  }
-
-  Widget messagesListView(Bot bot) {
-    int itemCount = bot.messages.length + 2;
-    return GestureDetector(
-      onTap: () {
-        if (messageBarController.unfocus != null) {
-          messageBarController.unfocus();
-        }
-      },
-      child: ListView.separated(
-        controller: scrollController,
-        itemCount: itemCount,
-        reverse: true,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == 0 || index == itemCount - 1) {
-            return SizedBox(height: 5);
-          }
-          Message message = bot.messages.reversed.elementAt(index - 1);
-          return MessageBobble(message: message, bot: bot);
-        },
-        separatorBuilder: (BuildContext context, _) => SizedBox(height: 5.0),
-      ),
     );
   }
 }
