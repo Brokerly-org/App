@@ -77,6 +77,7 @@ class UIManager {
 
   static void removeBot(BuildContext context, Bot bot) {
     context.read<BotsProvider>().removeBot(bot);
+    Cache.removeBot(bot);
     showMessage(context, "Bot ${bot.botname} chat deleted");
   }
 

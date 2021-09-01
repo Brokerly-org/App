@@ -51,7 +51,8 @@ class Cache {
     String botKey = bot.id;
     if (botNames.contains(botKey)) {
       botNames.remove(botKey);
-      return await disk.setStringList("botlist", botNames);
+      return await disk.setStringList("botlist", botNames) &&
+          await deleteBot(botKey);
     }
     return false;
   }
@@ -64,5 +65,10 @@ class Cache {
   static Future<String> loadRootSecret() async {
     SharedPreferences disk = await SharedPreferences.getInstance();
     return disk.getString("rootSecret");
+  }
+
+  static Future<bool> deleteBot(String botKey) async {
+    SharedPreferences disk = await SharedPreferences.getInstance();
+    return disk.remove(botKey);
   }
 }
