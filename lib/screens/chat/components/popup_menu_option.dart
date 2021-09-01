@@ -7,13 +7,14 @@ Widget PopupMenuOption(
     child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       Icon(
         icon,
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.onSecondary,
       ),
       SizedBox(width: 5.0),
       Text(text),
     ]),
     textStyle: TextStyle(
-        color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w600),
+        color: Theme.of(context).colorScheme.onSecondary,
+        fontWeight: FontWeight.w600),
     value: value,
   );
 }

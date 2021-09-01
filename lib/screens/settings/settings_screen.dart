@@ -160,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             iconData: Icons.close_sharp,
             onTap: onCloseClick,
             iconSize: 23,
-            bgColor: Colors.white,
+            bgColor: Theme.of(context).colorScheme.onSecondary,
           ),
         ),
       ),

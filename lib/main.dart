@@ -42,41 +42,62 @@ class MyApp extends StatelessWidget {
       ],
       theme: ThemeData(
         primarySwatch: primery,
+        accentColor: accentColor,
         backgroundColor: backgroundColor,
         textTheme: Theme.of(context).textTheme.apply(
               bodyColor: textColor,
               displayColor: textColor,
             ),
+        colorScheme: ColorScheme.light(
+          onPrimary: onPrimery,
+          onSecondary: onSecondary,
+        ),
         buttonColor: buttonColor,
       ),
-      onGenerateRoute: (settings) {
-        print(settings.name);
-        if (settings.name == "/chat") {
-          return PageRouteBuilder(
-              settings: settings,
-              pageBuilder: (_, __, ___) => ChatScreen(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeIn;
-                var tween = Tween(begin: begin, end: end)
-                    .chain(CurveTween(curve: curve));
-
-                return SlideTransition(
-                  position: animation.drive(tween),
-                  child: child,
-                );
-              },
-              transitionDuration: Duration(milliseconds: 300));
-        }
-        // Unknown route
-        return null;
-      },
+      darkTheme: ThemeData(
+        primaryColor: darkPrimery,
+        accentColor: darkAccentColor,
+        backgroundColor: darkBackgroundColor,
+        textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: darkTextColor,
+              displayColor: darkTextColor,
+            ),
+        colorScheme: ColorScheme.dark(
+          onPrimary: darkOnPrimery,
+          onSecondary: darkOnSecondary,
+        ),
+        buttonColor: darkButtonColor,
+      ),
+      themeMode: ThemeMode.dark,
+      onGenerateRoute: onRoute,
       routes: {
         '/': (_) => AppLoader(),
       },
       initialRoute: "/",
     );
+  }
+
+  Route<dynamic> onRoute(settings) {
+    print(settings.name);
+    if (settings.name == "/chat") {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => ChatScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeIn;
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 300));
+    }
+    // Unknown route
+    return null;
   }
 }

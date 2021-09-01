@@ -68,7 +68,12 @@ class _MessageBarState extends State<MessageBar> {
       child: Container(
         width: double.infinity,
         constraints: BoxConstraints(maxHeight: 300),
-        color: Theme.of(context).primaryColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
+          boxShadow: [
+            BoxShadow(offset: Offset(0, 4), spreadRadius: 1, blurRadius: 5)
+          ],
+        ),
         child: Column(
           children: [
             Row(
@@ -121,7 +126,7 @@ class _MessageBarState extends State<MessageBar> {
         controller: textEditingController,
         focusNode: focusNode,
         autofocus: MediaQuery.of(context).size.width > kDesktopMinSize,
-        cursorColor: Colors.white,
+        cursorColor: Theme.of(context).colorScheme.onSecondary,
         style: TextStyle(fontSize: 20),
         decoration: InputDecoration(
             border: InputBorder.none,
@@ -138,7 +143,7 @@ class _MessageBarState extends State<MessageBar> {
     return IconButton(
       icon: Icon(
         Icons.send,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
         size: 32,
       ),
       onPressed: sendMessage,

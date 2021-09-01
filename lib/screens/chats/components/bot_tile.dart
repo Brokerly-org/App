@@ -39,7 +39,7 @@ class BotTile extends StatelessWidget {
             context.read<BotsProvider>().selectBotID(bot.id);
           }
         },
-        tileColor: Theme.of(context).primaryColor,
+        tileColor: Theme.of(context).accentColor,
         title: Text(bot.title),
         subtitle: Text(bot.server.url),
         leading: onlineIndicator(),
@@ -48,7 +48,7 @@ class BotTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             SizedBox(height: 9),
-            lastMessageDate(),
+            lastMessageDate(context),
             SizedBox(height: 8),
             bot.unreadMessages > 0
                 ? unreadMessagesCounter(context)
@@ -59,13 +59,15 @@ class BotTile extends StatelessWidget {
     );
   }
 
-  Widget lastMessageDate() {
+  Widget lastMessageDate(BuildContext context) {
     return bot.messages.isNotEmpty
         ? Text(
             formatDate(bot.messages.last.sentAt),
             style: TextStyle(
                 fontSize: 12,
-                color: bot.unreadMessages > 0 ? Colors.amber : Colors.white,
+                color: bot.unreadMessages > 0
+                    ? Colors.amber
+                    : Theme.of(context).colorScheme.onSecondary,
                 fontWeight: FontWeight.w400),
           )
         : SizedBox();

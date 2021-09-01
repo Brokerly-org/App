@@ -135,7 +135,10 @@ class _ExpandableFabState extends State<ExpandableFab>
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).buttonColor,
             onPressed: _toggle,
-            child: Icon(Icons.add_rounded),
+            child: Icon(
+              Icons.add_rounded,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

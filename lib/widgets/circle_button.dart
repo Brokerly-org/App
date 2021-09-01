@@ -1,4 +1,3 @@
-import 'package:brokerly/style.dart';
 import 'package:flutter/material.dart';
 
 class CircleButton extends StatelessWidget {
@@ -29,7 +28,7 @@ class CircleButton extends StatelessWidget {
         child: Center(
           child: Icon(
             iconData,
-            color: backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             size: iconSize,
           ),
         ),

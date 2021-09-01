@@ -106,15 +106,15 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       children: [
         ActionButton(
           onPressed: () => openNewBotInput(context),
-          icon: const Icon(Icons.add_link),
+          icon: Icon(Icons.add_link, color: Colors.white),
         ),
         ActionButton(
           onPressed: onScanClick,
-          icon: const Icon(Icons.qr_code),
+          icon: Icon(Icons.qr_code, color: Colors.white),
         ),
         ActionButton(
           onPressed: () => onSearchClick(),
-          icon: const Icon(Icons.search_sharp),
+          icon: Icon(Icons.search_sharp, color: Colors.white),
         ),
       ],
     );

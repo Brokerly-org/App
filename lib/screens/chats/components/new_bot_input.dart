@@ -19,7 +19,9 @@ class NewBotInput extends StatelessWidget {
         Container(
           height: 100,
           width: double.infinity,
-          color: Colors.white,
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(offset: Offset(0, 4), spreadRadius: 1, blurRadius: 5)
+          ]),
           child: Column(
             children: [
               textField(context),
@@ -73,11 +75,11 @@ class NewBotInput extends StatelessWidget {
         },
         focusNode: focusNode,
         controller: textController,
-        style:
-            TextStyle(fontSize: 20, color: Theme.of(context).backgroundColor),
+        style: TextStyle(fontSize: 20, color: Colors.black),
         decoration: InputDecoration.collapsed(
           hintText: AppLocalizations.of(context).botSearchBoxHint,
-          hintStyle: TextStyle(fontSize: 20),
+          hintStyle:
+              TextStyle(fontSize: 20, color: Colors.black.withOpacity(0.5)),
           border: InputBorder.none,
         ),
       ),

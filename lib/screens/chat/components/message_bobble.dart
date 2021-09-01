@@ -71,25 +71,30 @@ class MessageBobble extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(14)),
           color: myMessage
               ? Theme.of(context).buttonColor
-              : Theme.of(context).primaryColor),
-      child: content(context),
+              : Theme.of(context).accentColor),
+      child: content(context, myMessage),
     );
   }
 
-  Column content(BuildContext context) {
+  Column content(BuildContext context, bool myMessage) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        text(context),
+        text(context, myMessage),
         SizedBox(height: 2),
         date(),
       ],
     );
   }
 
-  Container text(BuildContext context) {
+  Container text(BuildContext context, bool myMessage) {
     return Container(
-      child: Text(message.data, style: TextStyle(fontSize: 18)),
+      child: Text(message.data,
+          style: TextStyle(
+              fontSize: 18,
+              color: myMessage
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSecondary)),
     );
   }
 
