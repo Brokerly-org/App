@@ -1,0 +1,59 @@
+# This is a basic workflow to help you get started with Actions
+
+name: FlutterWebAppBuild
+
+# Controls when the workflow will run
+on:
+  push:
+    tags:
+    - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Flutter action
+        uses: subosito/flutter-action@v1.5.3
+
+      - run: flutter pub get
+      - run: flutter build web --release
+      
+#       - name: Upload apk build
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: apk-build
+#           path: build/app/outputs/flutter-apk/app-release.apk
+
+      
+      - name: Easy Zip Web App files
+        uses: vimtor/action-zip@v1
+        with:
+          files: build/web
+          dest: webapp.zip
+
+    
+#       - name: Upload web app to release
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: webapp-build
+#           path: webapp.zip
+      
+      - name: Publish to release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            webapp.zip
+      
+      - name: send finish build message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "Finished building webapp"
