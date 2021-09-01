@@ -41,7 +41,9 @@ class UIManager {
       showError(context, "Invalid Link");
       return;
     }
-    if (botsProvider.bots.containsKey(uri.queryParameters["botname"])) {
+    String botKey = uri.authority + "!" + uri.queryParameters["botname"];
+
+    if (botsProvider.bots.containsKey(botKey)) {
       return;
     }
 
