@@ -42,7 +42,13 @@ void handleUri(
 Future<void> initUniLinks(
     Function(String) onNewBot, Function(String) onInvalidLink) async {
   if (kIsWeb) {
-    handleUri(webUri, onNewBot, onInvalidLink);
+    String url = webUri.queryParameters["url"];
+    String botname = webUri.queryParameters["botname"];
+    bool secure = !(webUri.queryParameters['secure'] == "false");
+    print(url + " " + botname + " " + secure.toString());
+    Uri botUri = Uri.parse(
+        "https://brokerly.tk/bot/${secure ? 'secure' : 'unsecure'}/$botname?url=$url");
+    handleUri(botUri, onNewBot, onInvalidLink);
     return;
   }
   linkStream.listen((String link) {
