@@ -1,5 +1,6 @@
 import 'package:brokerly/ui_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -19,17 +20,11 @@ class BotTile extends StatelessWidget {
   final Client client;
   final Bot bot;
 
-  String formatDate(DateTime date) {
-    String format = "hh:mm";
-    final DateFormat formatter = DateFormat(format);
-    final String formatted = formatter.format(date);
-    return formatted;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
+    return SizedBox(
+      height: 120,
+      child: GestureDetector(
         onTap: () {
           context.read<BotsProvider>().readBotMessages(bot.id);
           if (!UIManager.isDesktop(context)) {
@@ -39,47 +34,49 @@ class BotTile extends StatelessWidget {
             context.read<BotsProvider>().selectBotID(bot.id);
           }
         },
-        tileColor: Theme.of(context).primaryColor,
-        title: Text(bot.title),
-        subtitle: Text(bot.server.url),
-        leading: onlineIndicator(),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 9),
-            lastMessageDate(),
-            SizedBox(height: 8),
-            bot.unreadMessages > 0
-                ? unreadMessagesCounter(context)
-                : SizedBox(),
+            botCard(context),
+            SizedBox(height: 5),
+            botTitle(),
           ],
         ),
       ),
     );
   }
 
-  Widget lastMessageDate() {
-    return bot.messages.isNotEmpty
-        ? Text(
-            formatDate(bot.messages.last.sentAt),
-            style: TextStyle(
-                fontSize: 12,
-                color: bot.unreadMessages > 0 ? Colors.amber : Colors.white,
-                fontWeight: FontWeight.w400),
-          )
-        : SizedBox();
+  Text botTitle() {
+    return Text(
+      bot.title,
+      style: TextStyle(
+        fontSize: 16.5,
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 
-  Widget unreadMessagesCounter(BuildContext context) {
-    return CircleAvatar(
-      radius: 8,
-      backgroundColor: Colors.amber,
-      child: FittedBox(
-        child: Padding(
-          padding: EdgeInsets.all(2.0),
-          child: Text("${bot.unreadMessages}",
-              style: TextStyle(color: Colors.black)),
+  Widget botCard(BuildContext context) {
+    return SizedBox(
+      height: 85,
+      width: 85,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Theme.of(context).backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.25),
+                spreadRadius: 0,
+                blurRadius: 4,
+              ),
+            ]),
+        child: SvgPicture.asset(
+          'assets/home_illustrate.svg',
+          height: 48,
+          width: 48,
         ),
       ),
     );

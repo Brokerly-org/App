@@ -148,9 +148,14 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   Container botsListView(List<Bot> bots) {
     return Container(
       padding: EdgeInsets.all(8.0),
-      child: ListView.builder(
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 120,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 20,
+          mainAxisExtent: 120,
+        ),
         itemCount: bots.length,
-        itemExtent: 80,
         itemBuilder: (BuildContext context, int index) {
           Bot bot = bots[index];
           return BotTile(client: widget.client, bot: bot);
