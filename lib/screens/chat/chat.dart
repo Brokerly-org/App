@@ -93,20 +93,48 @@ class _ChatScreenState extends State<ChatScreen> {
         : null;
   }
 
-  Column body(Bot bot, BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.max,
+  Widget body(Bot bot, BuildContext context) {
+    return Stack(
       children: [
-        Expanded(flex: 80, child: messagesListView(bot)),
-        bot.blocked
-            ? unblockBar(context, bot)
-            : MessageBar(
-                sendMessage: (String message) =>
-                    UIManager.sendMessage(context, bot, message),
-                controller: messageBarController,
-              ),
+        messagesListView(bot),
+        routesMenu(),
       ],
+    );
+  }
+
+  DraggableScrollableSheet routesMenu() {
+    return DraggableScrollableSheet(
+      maxChildSize: 0.56,
+      minChildSize: 0.0625,
+      initialChildSize: 0.0625,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(35),
+                topRight: Radius.circular(35),
+              ),
+              boxShadow: [
+                BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.25), blurRadius: 4)
+              ]),
+          child: GridView.count(
+            shrinkWrap: true,
+            controller: scrollController,
+            crossAxisCount: 2,
+            children: [
+              Container(
+                height: 83,
+                width: 89,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(33),
+                  color: Theme.of(context).primaryColor,
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -121,33 +149,14 @@ class _ChatScreenState extends State<ChatScreen> {
       child: ListView.separated(
         controller: scrollController,
         itemCount: itemCount,
-        reverse: true,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0 || index == itemCount - 1) {
             return SizedBox(height: 5);
           }
-          Message message = bot.messages.reversed.elementAt(index - 1);
+          Message message = bot.messages.elementAt(index - 1);
           return MessageBobble(message: message, bot: bot);
         },
         separatorBuilder: (BuildContext context, _) => SizedBox(height: 5.0),
-      ),
-    );
-  }
-
-  InkWell unblockBar(BuildContext context, Bot bot) {
-    return InkWell(
-      onTap: () {
-        UIManager.unblockBot(context, bot, showSnakBar: false);
-      },
-      child: Container(
-        width: double.infinity,
-        height: 45,
-        color: Theme.of(context).primaryColor,
-        alignment: Alignment.center,
-        child: Text(
-          "unblock",
-          style: TextStyle(color: Colors.amber, fontSize: 22),
-        ),
       ),
     );
   }
@@ -175,13 +184,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   AppBar buildAppBar(Bot bot, BuildContext context) {
     return AppBar(
-        title: Row(
-          children: [
-            Text(bot.title),
-            if (bot.blocked) Text(" (Blocked)"),
-          ],
-        ),
-        actions: [chatActions(context, bot)]);
+      title: Row(
+        children: [
+          Text(bot.title),
+          if (bot.blocked) Text(" (Blocked)"),
+        ],
+      ),
+      //actions: [chatActions(context, bot)],
+    );
   }
 
   PopupMenuButton<String> chatActions(BuildContext context, Bot bot) {
