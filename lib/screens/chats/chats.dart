@@ -78,21 +78,6 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
           padding: EdgeInsets.only(right: getAppBarTitlePadding()),
           child: title,
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => SettingsScreen()),
-                  (Route<dynamic> route) => true);
-            },
-          )
-        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: showFab ? getFab(context) : null,

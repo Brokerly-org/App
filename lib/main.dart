@@ -43,11 +43,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: primery,
         backgroundColor: backgroundColor,
-        textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: textColor,
-              displayColor: textColor,
-            ),
-        buttonColor: buttonColor,
       ),
       onGenerateRoute: (settings) {
         print(settings.name);

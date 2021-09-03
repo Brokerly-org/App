@@ -23,7 +23,7 @@ dependencies:
   emoji_picker: ^0.1.0
   flutter_native_splash: ^1.2.1
   cupertino_icons: ^1.0.2
-  audioplayers: ^0.18.1
+  # audioplayers: ^0.18.1
   web_socket_channel: ^2.1.0
   intl: ^0.17.0
   crypto: ^3.0.1
@@ -41,7 +41,7 @@ flutter_icons:
   ios: true
   image_path: "assets/icon/icon.png"
   adaptive_icon_background: #4D4D4D
-  # TO replace icon < flutter pub run flutter_launcher_icons:main -f pubspec.yaml >
+  # To replace icon < flutter pub run flutter_launcher_icons:main -f pubspec.yaml >
 
 flutter:
   uses-material-design: true

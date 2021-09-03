@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:crypto/crypto.dart';
-import 'package:audioplayers/audioplayers.dart';
+//import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -149,11 +149,11 @@ class Client {
     if (kIsWeb) {
       return;
     }
-    AudioPlayer audioPlayer = AudioPlayer();
-    final ByteData data = await rootBundle.load('assets/received.wav');
-    final Uint8List dataBytes = data.buffer.asUint8List();
-    int result = await audioPlayer.playBytes(dataBytes);
-    print('sendMessageSound result is $result');
+    // AudioPlayer audioPlayer = AudioPlayer();
+    // final ByteData data = await rootBundle.load('assets/received.wav');
+    // final Uint8List dataBytes = data.buffer.asUint8List();
+    // int result = await audioPlayer.playBytes(dataBytes);
+    // print('sendMessageSound result is $result');
   }
 
   Future<int> hasUpdates(Server server) async {

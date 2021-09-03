@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-int r = 77;
-int g = 77;
-int b = 77;
+int r = 21;
+int g = 92;
+int b = 194;
 
 Map<int, Color> color = {
   50: Color.fromRGBO(r, g, b, .1),
@@ -17,11 +17,8 @@ Map<int, Color> color = {
   900: Color.fromRGBO(r, g, b, 1),
 };
 
-MaterialColor primery = MaterialColor(0xFF4D4D4D, color);
-
-Color backgroundColor = Color.fromRGBO(30, 30, 30, 1);
-Color textColor = Color.fromRGBO(253, 253, 253, 1);
-Color buttonColor = Color.fromRGBO(52, 120, 219, 1);
+MaterialColor primery = MaterialColor(0xFF155cc2, color);
+Color backgroundColor = Color.fromRGBO(255, 255, 255, 1);
 
 Color onlineColor = Color.fromRGBO(36, 193, 33, 1);
 Color offlineColor = Color.fromRGBO(223, 204, 204, 1);

@@ -105,10 +105,8 @@ class _ExpandableFabState extends State<ExpandableFab>
             onTap: _toggle,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-              ),
+              child: Icon(Icons.close,
+                  color: Theme.of(context).colorScheme.onPrimary),
             ),
           ),
         ),
@@ -133,7 +131,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 8),
           child: FloatingActionButton(
-            backgroundColor: Theme.of(context).buttonColor,
+            backgroundColor: Theme.of(context).primaryColor,
             onPressed: _toggle,
             child: Icon(Icons.add_rounded),
           ),
