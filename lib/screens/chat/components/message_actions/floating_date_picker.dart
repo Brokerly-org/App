@@ -39,7 +39,7 @@ class _FloatingDatePickerState extends State<FloatingDatePicker> {
   }
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(widget.bot, data);
+    UIManager.sendCallback(widget.bot, {"date picker": data});
   }
 
   String formatDate(DateTime date) {

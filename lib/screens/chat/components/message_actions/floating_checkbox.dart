@@ -24,7 +24,7 @@ class _FloatingCheckboxState extends State<FloatingCheckbox> {
   }
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(widget.bot, data);
+    UIManager.sendCallback(widget.bot, {"checkbox": data});
   }
 
   @override

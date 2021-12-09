@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:crypto/crypto.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -59,10 +59,11 @@ class Client {
     );
     connections[serverUrl] = webSocket;
     webSocket.stream.listen(
-      (message) {
-        List<dynamic> messages = json.decode(utf8.decode(message.codeUnits));
-        messages.forEach((botMessages) {
-          this.onNewUpdate(context, botMessages, server);
+      (update) {
+        var messages = json.decode(utf8.decode(update.codeUnits));
+
+        messages.forEach((botname, botMessages) {
+          this.onNewUpdate(context, botname, botMessages, server);
         });
       },
       onDone: () => reconnect(context, server),
@@ -70,12 +71,10 @@ class Client {
     );
   }
 
-  void onNewUpdate(
-      BuildContext context, Map<String, dynamic> botMessages, Server server) {
+  void onNewUpdate(BuildContext context, String botname,
+      List<dynamic> botMessages, Server server) {
     playRecvSound();
-    var messages = botMessages["messages"];
-    String botname = botMessages["chat"];
-    messages.forEach((messageData) {
+    botMessages.forEach((messageData) {
       UIManager.newMessage(context, server.url + "!" + botname, messageData);
     });
   }
@@ -92,15 +91,18 @@ class Client {
     await http.post(uri);
   }
 
-  Future<void> pushCallbackDataToBot(Bot bot, dynamic callback) async {
+  Future<void> pushCallbackDataToBot(
+      Bot bot, Map<String, dynamic> callback) async {
     Server server = bot.server;
-    Map<String, String> params = {
+    dynamic value = callback.values.first;
+    Map<String, String> paramsK = {
       "token": server.userToken,
-      "callback_data": callback.toString(),
       "botname": bot.botname,
+      "widget": callback.keys.first,
+      "value": value.toString(),
     };
     String path = '/user/callback';
-    Uri uri = this.uriFromServer(server, path, params);
+    Uri uri = this.uriFromServer(server, path, paramsK);
 
     var response = await http.post(uri).timeout(Duration(seconds: 20));
     if (response.statusCode != 200) {
@@ -149,11 +151,11 @@ class Client {
     if (kIsWeb) {
       return;
     }
-    AudioPlayer audioPlayer = AudioPlayer();
-    final ByteData data = await rootBundle.load('assets/received.wav');
-    final Uint8List dataBytes = data.buffer.asUint8List();
-    int result = await audioPlayer.playBytes(dataBytes);
-    print('sendMessageSound result is $result');
+    // AudioPlayer audioPlayer = AudioPlayer();
+    // final ByteData data = await rootBundle.load('assets/received.wav');
+    // final Uint8List dataBytes = data.buffer.asUint8List();
+    // int result = await audioPlayer.playBytes(dataBytes);
+    // print('sendMessageSound result is $result');
   }
 
   Future<int> hasUpdates(Server server) async {

@@ -10,7 +10,7 @@ class FloatingButton extends StatelessWidget {
   final Bot bot;
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(bot, data);
+    UIManager.sendCallback(bot, {"button": data});
   }
 
   @override

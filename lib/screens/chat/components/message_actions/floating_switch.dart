@@ -24,7 +24,7 @@ class _FloatingSwitchState extends State<FloatingSwitch> {
   }
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(widget.bot, data);
+    UIManager.sendCallback(widget.bot, {"switch": data});
   }
 
   @override

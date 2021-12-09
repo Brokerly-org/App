@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,11 +20,11 @@ class UIManager {
       return;
     }
     // TODO load data once and forever for that widget
-    AudioPlayer audioPlayer = AudioPlayer();
-    final ByteData data = await rootBundle.load('assets/sent.wav');
-    final Uint8List dataBytes = data.buffer.asUint8List();
-    int result = await audioPlayer.playBytes(dataBytes);
-    print('sendMessageSound result is $result');
+    // AudioPlayer audioPlayer = AudioPlayer();
+    // final ByteData data = await rootBundle.load('assets/sent.wav');
+    // final Uint8List dataBytes = data.buffer.asUint8List();
+    // int result = await audioPlayer.playBytes(dataBytes);
+    // print('sendMessageSound result is $result');
   }
 
   static Bot getBot(BuildContext context, String botId) {
@@ -55,6 +55,7 @@ class UIManager {
       String userToken = await Client()
           .registerToServer(uri.scheme, uri.authority)
           .catchError((var error) {
+        showError(context, error.toString());
         return null;
       });
       if (userToken == null) {
@@ -100,7 +101,7 @@ class UIManager {
     botsProvider.addMessagesToBot(botId, [message]);
   }
 
-  static Future<void> sendCallback(Bot bot, dynamic data) async {
+  static Future<void> sendCallback(Bot bot, Map<String, dynamic> data) async {
     await Client().pushCallbackDataToBot(bot, data);
   }
 
@@ -141,7 +142,6 @@ class UIManager {
     if (botNames == null) {
       return;
     }
-    print(botNames);
     for (String botname in botNames) {
       Bot bot = await Cache.loadBot(botname);
       if (bot != null) {

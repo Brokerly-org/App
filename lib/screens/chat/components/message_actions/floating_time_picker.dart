@@ -32,7 +32,7 @@ class _FloatingTimePickerState extends State<FloatingTimePicker> {
   }
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(widget.bot, data);
+    UIManager.sendCallback(widget.bot, {"time picker": data});
   }
 
   String formatTime(TimeOfDay time) {

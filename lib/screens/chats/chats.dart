@@ -35,6 +35,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
 
   void addBot(BuildContext context, String longBotLink) {
     String botLink = extractBotLink(Uri.parse(longBotLink));
+    print(botLink);
     UIManager.addBotFromUrl(context, botLink);
     closeNewBotInput();
   }

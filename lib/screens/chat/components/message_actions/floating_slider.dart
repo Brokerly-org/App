@@ -23,7 +23,7 @@ class _FloatingSliderState extends State<FloatingSlider> {
   }
 
   void sendCallback(dynamic data) {
-    UIManager.sendCallback(widget.bot, data)
+    UIManager.sendCallback(widget.bot, {"slider": data})
         .onError((error, stackTrace) => print(error));
   }
 
